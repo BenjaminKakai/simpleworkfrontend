@@ -1,8 +1,8 @@
-// RemoveClient.js
+// src/RemoveClient.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const RemoveClient = () => {
   const [clients, setClients] = useState([]);
@@ -24,7 +24,7 @@ const RemoveClient = () => {
   const handleRemove = async () => {
     try {
       const response = await axios.delete(`${backendUrl}/clients/${selectedClient}`);
-      console.log(response.data); // Log success message
+      console.log('Client removed:', response.data); // Log success message
       // Optionally update client list or handle success
     } catch (error) {
       console.error('Error removing client:', error);

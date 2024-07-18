@@ -1,10 +1,10 @@
-// FinalizedDeals.js
+// src/FinalizedDeals.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
-const FinalizedDeals = () => {
+const FinalizedDeals = ({ onDealFinalized }) => {
   const [finalizedDeals, setFinalizedDeals] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const FinalizedDeals = () => {
     };
 
     fetchFinalizedDeals();
-  }, []);
+  }, [onDealFinalized]); // Update finalized deals when a deal is finalized
 
   return (
     <div>

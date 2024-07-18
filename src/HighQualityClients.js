@@ -1,10 +1,10 @@
-// HighQualityClients.js
+// src/HighQualityClients.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
-const HighQualityClients = () => {
+const HighQualityClients = ({ onClientQualityChange }) => {
   const [highQualityClients, setHighQualityClients] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const HighQualityClients = () => {
     };
 
     fetchHighQualityClients();
-  }, []);
+  }, [onClientQualityChange]); // Update high-quality clients when quality changes
 
   return (
     <div>

@@ -1,8 +1,8 @@
-// PendingClients.js
+// src/PendingClients.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const PendingClients = () => {
   const [pendingClients, setPendingClients] = useState([]);
@@ -18,7 +18,7 @@ const PendingClients = () => {
     };
 
     fetchPendingClients();
-  }, []);
+  }, []); // Fetch pending clients only once when the component mounts
 
   return (
     <div>

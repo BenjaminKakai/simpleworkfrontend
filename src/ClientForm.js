@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
-const ClientForm = () => {
+const ClientForm = ({ onClientAdded }) => {
   const [client, setClient] = useState({
     project: '',
     bedrooms: '',
@@ -35,6 +35,18 @@ const ClientForm = () => {
     try {
       const response = await axios.post(`${backendUrl}/clients`, client);
       console.log('Client added:', response.data);
+      onClientAdded(response.data); // Notify parent component about new client
+      // Clear form after submission
+      setClient({
+        project: '',
+        bedrooms: '',
+        budget: '',
+        schedule: '',
+        email: '',
+        fullname: '',
+        phone: '',
+        quality: 'low',
+      });
     } catch (error) {
       console.error('There was an error adding the client:', error);
     }
