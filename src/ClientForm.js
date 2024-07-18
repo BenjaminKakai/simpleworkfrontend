@@ -11,13 +11,21 @@ const ClientForm = () => {
     email: '',
     fullname: '',
     phone: '',
+    quality: 'low', // Default to 'low' quality
   });
 
   const handleChange = (e) => {
-    setClient({
-      ...client,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.type === 'checkbox') {
+      setClient({
+        ...client,
+        quality: e.target.checked ? 'high' : 'low',
+      });
+    } else {
+      setClient({
+        ...client,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -32,13 +40,17 @@ const ClientForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="project" placeholder="Project" value={client.project} onChange={handleChange} />
-      <input type="number" name="bedrooms" placeholder="Bedrooms" value={client.bedrooms} onChange={handleChange} />
-      <input type="number" name="budget" placeholder="Budget" value={client.budget} onChange={handleChange} />
-      <input type="datetime-local" name="schedule" placeholder="Schedule" value={client.schedule} onChange={handleChange} />
-      <input type="email" name="email" placeholder="Email" value={client.email} onChange={handleChange} />
-      <input type="text" name="fullname" placeholder="Full Name" value={client.fullname} onChange={handleChange} />
-      <input type="text" name="phone" placeholder="Phone" value={client.phone} onChange={handleChange} />
+      <input type="text" name="project" placeholder="Project" value={client.project} onChange={handleChange} required />
+      <input type="number" name="bedrooms" placeholder="Bedrooms" value={client.bedrooms} onChange={handleChange} required />
+      <input type="number" name="budget" placeholder="Budget" value={client.budget} onChange={handleChange} required />
+      <input type="datetime-local" name="schedule" placeholder="Schedule" value={client.schedule} onChange={handleChange} required />
+      <input type="email" name="email" placeholder="Email" value={client.email} onChange={handleChange} required />
+      <input type="text" name="fullname" placeholder="Full Name" value={client.fullname} onChange={handleChange} required />
+      <input type="text" name="phone" placeholder="Phone" value={client.phone} onChange={handleChange} required />
+      <label>
+        <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
+        High Quality
+      </label>
       <button type="submit">Add Client</button>
     </form>
   );
