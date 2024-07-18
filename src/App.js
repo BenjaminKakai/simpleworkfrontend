@@ -7,7 +7,8 @@ import HighQualityClients from './HighQualityClients';
 import FinalizedDeals from './FinalizedDeals';
 import PendingClients from './PendingClients';
 import NavBar from './NavBar';
-import './App.css'; // Import your CSS file for styling
+import Footer from './Footer';
+import './App.css';
 
 const App = () => {
   const [showForm, setShowForm] = useState(false);
@@ -71,6 +72,15 @@ const App = () => {
     setShowPendingClients(true);
   };
 
+  const handleHomeClick = () => {
+    setShowForm(false);
+    setShowRemoveClient(false);
+    setShowClientList(false);
+    setShowHighQualityClients(false);
+    setShowFinalizedDeals(false);
+    setShowPendingClients(false);
+  };
+
   return (
     <div className="app">
       <NavBar
@@ -80,9 +90,10 @@ const App = () => {
         onShowHighQualityClients={handleShowHighQualityClients}
         onShowFinalizedDeals={handleShowFinalizedDeals}
         onShowPendingClients={handleShowPendingClients}
+        onHomeClick={handleHomeClick} // Pass home click handler to NavBar
       />
-      <div className="centered-text">
-        <h1 className="rotate-text">In-House Sales Department Client Management</h1>
+      <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
+        <h1 className="rotate-text" style={{ fontSize: '24px', animation: 'rotate 20s infinite linear' }}>Sales Department</h1>
       </div>
       {showForm && <ClientForm />}
       {showRemoveClient && <RemoveClient />}
@@ -90,6 +101,7 @@ const App = () => {
       {showHighQualityClients && <HighQualityClients />}
       {showFinalizedDeals && <FinalizedDeals />}
       {showPendingClients && <PendingClients />}
+      <Footer />
     </div>
   );
 };

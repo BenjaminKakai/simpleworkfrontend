@@ -8,37 +8,67 @@ const NavBar = ({
   onShowHighQualityClients,
   onShowFinalizedDeals,
   onShowPendingClients,
+  onHomeClick, // Add this prop to notify parent about home click
 }) => {
   const [activeTab, setActiveTab] = useState(null);
 
-  const handleHomeClick = () => {
-    setActiveTab(null); // Collapse all tabs
-  };
-
   const handleButtonClick = (tab) => {
     setActiveTab(tab === activeTab ? null : tab); // Toggle tab
+    switch (tab) {
+      case 'form':
+        onShowForm();
+        break;
+      case 'removeClient':
+        onShowRemoveClient();
+        break;
+      case 'clientList':
+        onShowClientList();
+        break;
+      case 'highQualityClients':
+        onShowHighQualityClients();
+        break;
+      case 'finalizedDeals':
+        onShowFinalizedDeals();
+        break;
+      case 'pendingClients':
+        onShowPendingClients();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleHomeClick = () => {
+    setActiveTab(null); // Collapse all tabs
+    onHomeClick(); // Notify parent to collapse tabs and reset view
+  };
+
+  // Ensure form is shown immediately when 'form' tab is clicked
+  const handleFormClick = () => {
+    setActiveTab('form'); // Set 'form' as active tab
+    onShowForm(); // Show the form immediately
   };
 
   return (
     <div className="navbar">
       <button onClick={handleHomeClick}>Home</button>
-      <button className={activeTab === 'form' ? 'active' : ''} onClick={() => handleButtonClick('form')}>
-        Show Form
+      <button className={activeTab === 'form' ? 'active' : ''} onClick={handleFormClick}>
+        New Client
       </button>
       <button className={activeTab === 'removeClient' ? 'active' : ''} onClick={() => handleButtonClick('removeClient')}>
-        Show Remove Client
+        Remove Client
       </button>
       <button className={activeTab === 'clientList' ? 'active' : ''} onClick={() => handleButtonClick('clientList')}>
-        Show Client List
+        Client List
       </button>
       <button className={activeTab === 'highQualityClients' ? 'active' : ''} onClick={() => handleButtonClick('highQualityClients')}>
-        Show High Quality Clients
+        High Quality Clients
       </button>
       <button className={activeTab === 'finalizedDeals' ? 'active' : ''} onClick={() => handleButtonClick('finalizedDeals')}>
-        Show Finalized Deals
+        Finalized Deals
       </button>
       <button className={activeTab === 'pendingClients' ? 'active' : ''} onClick={() => handleButtonClick('pendingClients')}>
-        Show Pending Clients
+        Pending Clients
       </button>
     </div>
   );

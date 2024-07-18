@@ -35,7 +35,7 @@ const RemoveClient = () => {
   return (
     <div>
       <button onClick={() => setIsComponentVisible(!isComponentVisible)}>
-        {isComponentVisible ? 'Hide Remove Client' : 'Show Remove Client'}
+        {isComponentVisible ? 'Hide Remove Client' : 'Remove Client'}
       </button>
       {isComponentVisible && (
         <div>

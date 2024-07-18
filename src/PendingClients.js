@@ -24,7 +24,7 @@ const PendingClients = () => {
   return (
     <div>
       <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide Pending Clients' : 'Show Pending Clients'}
+        {isListVisible ? 'Hide Pending Clients' : 'open Pending Clients List'}
       </button>
       {isListVisible && (
         <>

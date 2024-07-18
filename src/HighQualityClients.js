@@ -24,7 +24,7 @@ const HighQualityClients = ({ onClientQualityChange }) => {
   return (
     <div>
       <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide High Quality Clients' : 'Show High Quality Clients'}
+        {isListVisible ? 'Hide High Quality Clients' : 'Open High Quality Clients'}
       </button>
       {isListVisible && (
         <>

@@ -24,7 +24,7 @@ const FinalizedDeals = ({ onDealFinalized }) => {
   return (
     <div>
       <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide Finalized Deals' : 'Show Finalized Deals'}
+        {isListVisible ? 'Hide Finalized Deals' : 'Open Finalized Deals'}
       </button>
       {isListVisible && (
         <>

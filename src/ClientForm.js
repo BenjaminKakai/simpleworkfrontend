@@ -53,28 +53,54 @@ const ClientForm = ({ onClientAdded }) => {
   };
 
   return (
-    <div>
-      <button onClick={() => setIsFormVisible(!isFormVisible)}>
-        {isFormVisible ? 'Hide Form' : 'Show Form'}
+    <div style={{ marginBottom: '20px' }}>
+      <button
+        style={{ marginBottom: '10px' }}
+        onClick={() => setIsFormVisible(!isFormVisible)}
+      >
+        {isFormVisible ? 'Hide Client Form' : 'New Client'}
       </button>
       {isFormVisible && (
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="project" placeholder="Project" value={client.project} onChange={handleChange} required />
-          <input type="number" name="bedrooms" placeholder="Bedrooms" value={client.bedrooms} onChange={handleChange} required />
-          <input type="number" name="budget" placeholder="Budget" value={client.budget} onChange={handleChange} required />
-          <input type="datetime-local" name="schedule" placeholder="Schedule" value={client.schedule} onChange={handleChange} required />
-          <input type="email" name="email" placeholder="Email" value={client.email} onChange={handleChange} required />
-          <input type="text" name="fullname" placeholder="Full Name" value={client.fullname} onChange={handleChange} required />
-          <input type="text" name="phone" placeholder="Phone" value={client.phone} onChange={handleChange} required />
-          <label>
-            <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
-            High Quality
-          </label>
-          <label>
-            <input type="checkbox" name="conversation_status" checked={client.conversation_status === 'ongoing'} onChange={handleChange} />
-            Ongoing Conversation
-          </label>
-          <button type="submit">Add Client</button>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Project:</span>
+              <input type="text" name="project" value={client.project} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Bedrooms:</span>
+              <input type="number" name="bedrooms" value={client.bedrooms} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Budget:</span>
+              <input type="number" name="budget" value={client.budget} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Schedule:</span>
+              <input type="datetime-local" name="schedule" value={client.schedule} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Email:</span>
+              <input type="email" name="email" value={client.email} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Full Name:</span>
+              <input type="text" name="fullname" value={client.fullname} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Phone:</span>
+              <input type="text" name="phone" value={client.phone} onChange={handleChange} required />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
+              <span style={{ marginLeft: '10px' }}>High Quality</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              <input type="checkbox" name="conversation_status" checked={client.conversation_status === 'ongoing'} onChange={handleChange} />
+              <span style={{ marginLeft: '10px' }}>Ongoing Conversation</span>
+            </label>
+          </div>
+          <button type="submit" style={{ marginTop: '10px', width: '100%' }}>Add Client</button>
         </form>
       )}
     </div>
