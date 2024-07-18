@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
+
 const ClientForm = () => {
   const [client, setClient] = useState({
     project: '',
@@ -31,7 +33,7 @@ const ClientForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/clients', client);
+      const response = await axios.post(`${backendUrl}/clients`, client);
       console.log('Client added:', response.data);
     } catch (error) {
       console.error('There was an error adding the client:', error);
