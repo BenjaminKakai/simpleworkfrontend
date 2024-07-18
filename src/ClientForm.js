@@ -1,4 +1,3 @@
-// src/ClientForm.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -33,7 +32,9 @@ const ClientForm = ({ onClientAdded }) => {
     try {
       const response = await axios.post(`${backendUrl}/clients`, client);
       console.log('Client added:', response.data);
-      onClientAdded(response.data); // Notify parent component about new client
+      if (onClientAdded) {
+        onClientAdded(response.data); // Notify parent component about new client if onClientAdded is defined
+      }
       // Clear form after submission
       setClient({
         project: '',

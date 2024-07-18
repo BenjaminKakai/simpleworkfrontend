@@ -1,4 +1,3 @@
-// src/PendingClients.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -24,7 +23,7 @@ const PendingClients = () => {
   return (
     <div>
       <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide Pending Clients' : 'open Pending Clients List'}
+        {isListVisible ? 'Hide Pending Clients' : 'Open Pending Clients List'}
       </button>
       {isListVisible && (
         <>
