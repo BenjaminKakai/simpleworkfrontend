@@ -6,6 +6,7 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const HighQualityClients = ({ onClientQualityChange }) => {
   const [highQualityClients, setHighQualityClients] = useState([]);
+  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     const fetchHighQualityClients = async () => {
@@ -22,14 +23,21 @@ const HighQualityClients = ({ onClientQualityChange }) => {
 
   return (
     <div>
-      <h2>High Quality Clients</h2>
-      <ul>
-        {highQualityClients.map((client) => (
-          <li key={client.id}>
-            {client.fullname} - {client.project}
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => setIsListVisible(!isListVisible)}>
+        {isListVisible ? 'Hide High Quality Clients' : 'Show High Quality Clients'}
+      </button>
+      {isListVisible && (
+        <>
+          <h2>High Quality Clients</h2>
+          <ul>
+            {highQualityClients.map((client) => (
+              <li key={client.id}>
+                {client.fullname} - {client.project}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

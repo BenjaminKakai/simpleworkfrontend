@@ -6,6 +6,7 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const PendingClients = () => {
   const [pendingClients, setPendingClients] = useState([]);
+  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     const fetchPendingClients = async () => {
@@ -22,14 +23,21 @@ const PendingClients = () => {
 
   return (
     <div>
-      <h2>Pending Clients</h2>
-      <ul>
-        {pendingClients.map((client) => (
-          <li key={client.id}>
-            {client.fullname} - {client.project}
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => setIsListVisible(!isListVisible)}>
+        {isListVisible ? 'Hide Pending Clients' : 'Show Pending Clients'}
+      </button>
+      {isListVisible && (
+        <>
+          <h2>Pending Clients</h2>
+          <ul>
+            {pendingClients.map((client) => (
+              <li key={client.id}>
+                {client.fullname} - {client.project}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

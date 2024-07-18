@@ -14,20 +14,18 @@ const ClientForm = ({ onClientAdded }) => {
     fullname: '',
     phone: '',
     quality: 'low', // Default to 'low' quality
+    conversation_status: 'none', // Default to 'none'
   });
 
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
   const handleChange = (e) => {
-    if (e.target.type === 'checkbox') {
-      setClient({
-        ...client,
-        quality: e.target.checked ? 'high' : 'low',
-      });
-    } else {
-      setClient({
-        ...client,
-        [e.target.name]: e.target.value,
-      });
-    }
+    const { name, value, type, checked } = e.target;
+    setClient((prevClient) => ({
+      ...prevClient,
+      [name]: type === 'checkbox' ? (checked ? 'ongoing' : 'none') : value,
+      quality: name === 'quality' ? (checked ? 'high' : 'low') : prevClient.quality,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -46,27 +44,40 @@ const ClientForm = ({ onClientAdded }) => {
         fullname: '',
         phone: '',
         quality: 'low',
+        conversation_status: 'none',
       });
+      setIsFormVisible(false); // Hide form after submission
     } catch (error) {
       console.error('There was an error adding the client:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="project" placeholder="Project" value={client.project} onChange={handleChange} required />
-      <input type="number" name="bedrooms" placeholder="Bedrooms" value={client.bedrooms} onChange={handleChange} required />
-      <input type="number" name="budget" placeholder="Budget" value={client.budget} onChange={handleChange} required />
-      <input type="datetime-local" name="schedule" placeholder="Schedule" value={client.schedule} onChange={handleChange} required />
-      <input type="email" name="email" placeholder="Email" value={client.email} onChange={handleChange} required />
-      <input type="text" name="fullname" placeholder="Full Name" value={client.fullname} onChange={handleChange} required />
-      <input type="text" name="phone" placeholder="Phone" value={client.phone} onChange={handleChange} required />
-      <label>
-        <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
-        High Quality
-      </label>
-      <button type="submit">Add Client</button>
-    </form>
+    <div>
+      <button onClick={() => setIsFormVisible(!isFormVisible)}>
+        {isFormVisible ? 'Hide Form' : 'Show Form'}
+      </button>
+      {isFormVisible && (
+        <form onSubmit={handleSubmit}>
+          <input type="text" name="project" placeholder="Project" value={client.project} onChange={handleChange} required />
+          <input type="number" name="bedrooms" placeholder="Bedrooms" value={client.bedrooms} onChange={handleChange} required />
+          <input type="number" name="budget" placeholder="Budget" value={client.budget} onChange={handleChange} required />
+          <input type="datetime-local" name="schedule" placeholder="Schedule" value={client.schedule} onChange={handleChange} required />
+          <input type="email" name="email" placeholder="Email" value={client.email} onChange={handleChange} required />
+          <input type="text" name="fullname" placeholder="Full Name" value={client.fullname} onChange={handleChange} required />
+          <input type="text" name="phone" placeholder="Phone" value={client.phone} onChange={handleChange} required />
+          <label>
+            <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
+            High Quality
+          </label>
+          <label>
+            <input type="checkbox" name="conversation_status" checked={client.conversation_status === 'ongoing'} onChange={handleChange} />
+            Ongoing Conversation
+          </label>
+          <button type="submit">Add Client</button>
+        </form>
+      )}
+    </div>
   );
 };
 

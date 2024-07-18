@@ -6,6 +6,7 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const FinalizedDeals = ({ onDealFinalized }) => {
   const [finalizedDeals, setFinalizedDeals] = useState([]);
+  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     const fetchFinalizedDeals = async () => {
@@ -22,14 +23,21 @@ const FinalizedDeals = ({ onDealFinalized }) => {
 
   return (
     <div>
-      <h2>Finalized Deals</h2>
-      <ul>
-        {finalizedDeals.map((client) => (
-          <li key={client.id}>
-            {client.fullname} - {client.project}
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => setIsListVisible(!isListVisible)}>
+        {isListVisible ? 'Hide Finalized Deals' : 'Show Finalized Deals'}
+      </button>
+      {isListVisible && (
+        <>
+          <h2>Finalized Deals</h2>
+          <ul>
+            {finalizedDeals.map((client) => (
+              <li key={client.id}>
+                {client.fullname} - {client.project}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

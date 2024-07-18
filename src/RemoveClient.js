@@ -7,6 +7,7 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 const RemoveClient = () => {
   const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState('');
+  const [isComponentVisible, setIsComponentVisible] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -33,16 +34,23 @@ const RemoveClient = () => {
 
   return (
     <div>
-      <h2>Remove Client</h2>
-      <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
-        <option value="">Select Client</option>
-        {clients.map((client) => (
-          <option key={client.id} value={client.id}>
-            {client.fullname}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleRemove} disabled={!selectedClient}>Remove Client</button>
+      <button onClick={() => setIsComponentVisible(!isComponentVisible)}>
+        {isComponentVisible ? 'Hide Remove Client' : 'Show Remove Client'}
+      </button>
+      {isComponentVisible && (
+        <div>
+          <h2>Remove Client</h2>
+          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
+            <option value="">Select Client</option>
+            {clients.map((client) => (
+              <option key={client.id} value={client.id}>
+                {client.fullname}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleRemove} disabled={!selectedClient}>Remove Client</button>
+        </div>
+      )}
     </div>
   );
 };

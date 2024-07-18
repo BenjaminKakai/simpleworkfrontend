@@ -6,6 +6,7 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const ClientList = ({ onClientRemoved }) => {
   const [clients, setClients] = useState([]);
+  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -32,15 +33,22 @@ const ClientList = ({ onClientRemoved }) => {
 
   return (
     <div>
-      <h2>Client List</h2>
-      <ul>
-        {clients.map((client) => (
-          <li key={client.id}>
-            {client.fullname} - {client.project}{' '}
-            <button onClick={() => handleRemoveClient(client.id)}>Remove Client</button>
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => setIsListVisible(!isListVisible)}>
+        {isListVisible ? 'Hide Client List' : 'Show Client List'}
+      </button>
+      {isListVisible && (
+        <>
+          <h2>Client List</h2>
+          <ul>
+            {clients.map((client) => (
+              <li key={client.id}>
+                {client.fullname} - {client.project}{' '}
+                <button onClick={() => handleRemoveClient(client.id)}>Remove Client</button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };
