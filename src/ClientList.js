@@ -1,4 +1,3 @@
-// src/ClientList.js (for listing clients)
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
