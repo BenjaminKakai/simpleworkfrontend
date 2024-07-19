@@ -24,8 +24,7 @@ const FinalizedDeals = ({ refetchTrigger }) => {
     <div>
       {finalizedDeals.length > 0 ? (
         <div>
-          <h2>Finalized Deals</h2>
-          <ul>
+          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
             {finalizedDeals.map((client) => (
               <li key={client.id}>
                 {client.fullname} - {client.project}

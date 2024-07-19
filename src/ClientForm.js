@@ -94,7 +94,7 @@ const ClientForm = ({ goToHome }) => {
               <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
             </label>
             <label style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '10px', width: '100px' }}>Conversation Status:</span>
+              <span style={{ marginRight: '10px', width: '100px' }}>Conversation Status-Ongoing:</span>
               <input type="checkbox" name="conversation_status" checked={client.conversation_status === 'ongoing'} onChange={handleChange} />
             </label>
           </div>

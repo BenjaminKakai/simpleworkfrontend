@@ -17,7 +17,6 @@ const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 const App = () => {
   const [activeView, setActiveView] = useState('home');
   const [clients, setClients] = useState([]);
-  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -30,7 +29,7 @@ const App = () => {
     };
 
     fetchClients();
-  }, [refetchTrigger]);
+  }, []);
 
   const handleShowView = (view) => {
     setActiveView(view);
@@ -41,13 +40,11 @@ const App = () => {
   };
 
   const handleClientAdded = (newClient) => {
-    setClients([...clients, newClient]);
-    setRefetchTrigger(prev => prev + 1);
+    setClients((prevClients) => [...prevClients, newClient]);
   };
 
   const handleClientRemoved = (removedClientId) => {
-    setClients(clients.filter(client => client.id !== removedClientId));
-    setRefetchTrigger(prev => prev + 1);
+    setClients((prevClients) => prevClients.filter(client => client.id !== removedClientId));
   };
 
   return (
@@ -71,8 +68,8 @@ const App = () => {
           {activeView === 'removeClient' && <RemoveClient onClientRemoved={handleClientRemoved} />}
           {activeView === 'clientList' && <ClientList clients={clients} onClientRemoved={handleClientRemoved} />}
           {activeView === 'highQualityClients' && <HighQualityClients clients={clients} />}
-          {activeView === 'finalizedDeals' && <FinalizedDeals clients={clients} refetchTrigger={refetchTrigger} />}
-          {activeView === 'pendingClients' && <PendingClients clients={clients} refetchTrigger={refetchTrigger} />}
+          {activeView === 'finalizedDeals' && <FinalizedDeals clients={clients} />}
+          {activeView === 'pendingClients' && <PendingClients clients={clients} />}
           <Footer />
         </ErrorBoundary>
       </div>

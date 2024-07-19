@@ -35,8 +35,7 @@ const PendingClients = ({ refetchTrigger }) => {
     <div>
       {pendingClients.length > 0 ? (
         <div>
-          <h2>Pending Clients</h2>
-          <ul>
+          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
             {pendingClients.map((client) => (
               <li key={client.id}>
                 {client.fullname} - {client.project}

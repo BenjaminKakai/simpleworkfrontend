@@ -1,4 +1,3 @@
-// src/HighQualityClients.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -28,8 +27,8 @@ const HighQualityClients = ({ onClientQualityChange }) => {
       </button>
       {isListVisible && (
         <>
-          <h2>High Quality Clients</h2>
-          <ul>
+        
+          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
             {highQualityClients.map((client) => (
               <li key={client.id}>
                 {client.fullname} - {client.project}
