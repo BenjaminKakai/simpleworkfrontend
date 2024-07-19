@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
-const ClientForm = ({ onClientAdded }) => {
+const ClientForm = ({ onClientAdded, goToHome }) => {
   const [client, setClient] = useState({
     project: '',
     bedrooms: '',
@@ -17,6 +17,7 @@ const ClientForm = ({ onClientAdded }) => {
   });
 
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -35,33 +36,39 @@ const ClientForm = ({ onClientAdded }) => {
       if (onClientAdded) {
         onClientAdded(response.data); // Notify parent component about new client if onClientAdded is defined
       }
-      // Clear form after submission
-      setClient({
-        project: '',
-        bedrooms: '',
-        budget: '',
-        schedule: '',
-        email: '',
-        fullname: '',
-        phone: '',
-        quality: 'low',
-        conversation_status: 'none',
-      });
-      setIsFormVisible(false); // Hide form after submission
+      setIsSubmitted(true); // Set submitted state to true
     } catch (error) {
       console.error('There was an error adding the client:', error);
     }
   };
 
+  const handleAddAnotherClient = () => {
+    setClient({
+      project: '',
+      bedrooms: '',
+      budget: '',
+      schedule: '',
+      email: '',
+      fullname: '',
+      phone: '',
+      quality: 'low',
+      conversation_status: 'none',
+    });
+    setIsSubmitted(false);
+    setIsFormVisible(true);
+  };
+
   return (
     <div style={{ marginBottom: '20px' }}>
-      <button
-        style={{ marginBottom: '10px' }}
-        onClick={() => setIsFormVisible(!isFormVisible)}
-      >
-        {isFormVisible ? 'Hide Client Form' : 'New Client'}
-      </button>
-      {isFormVisible && (
+      {!isFormVisible && !isSubmitted && (
+        <button
+          style={{ marginBottom: '10px' }}
+          onClick={() => setIsFormVisible(true)}
+        >
+          New Client
+        </button>
+      )}
+      {isFormVisible && !isSubmitted && (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', margin: '0 auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <label style={{ display: 'flex', alignItems: 'center' }}>
@@ -103,6 +110,16 @@ const ClientForm = ({ onClientAdded }) => {
           </div>
           <button type="submit" style={{ marginTop: '10px', width: '100%' }}>Add Client</button>
         </form>
+      )}
+      {isSubmitted && (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <button style={{ marginBottom: '10px' }} onClick={handleAddAnotherClient}>
+            Add Another Client
+          </button>
+          <button onClick={goToHome}>
+            Go Back Home
+          </button>
+        </div>
       )}
     </div>
   );

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import ClientContext from './ClientContext';
 
-const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
-
-const PendingClients = () => {
+const PendingClients = ({ refetchTrigger }) => {
+  const { clientStatusUpdated } = useContext(ClientContext);
+  const backendUrl = 'http://localhost:3000';
   const [pendingClients, setPendingClients] = useState([]);
-  const [isListVisible, setIsListVisible] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPendingClients = async () => {
@@ -14,19 +15,26 @@ const PendingClients = () => {
         setPendingClients(response.data);
       } catch (error) {
         console.error('Error fetching pending clients:', error);
+        setError(error);
       }
     };
 
     fetchPendingClients();
-  }, []); // Fetch pending clients only once when the component mounts
+  }, [backendUrl, clientStatusUpdated, refetchTrigger]);
+
+  if (error) {
+    return (
+      <div>
+        <h2>Error Fetching Pending Clients</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide Pending Clients' : 'Open Pending Clients List'}
-      </button>
-      {isListVisible && (
-        <>
+      {pendingClients.length > 0 ? (
+        <div>
           <h2>Pending Clients</h2>
           <ul>
             {pendingClients.map((client) => (
@@ -35,7 +43,9 @@ const PendingClients = () => {
               </li>
             ))}
           </ul>
-        </>
+        </div>
+      ) : (
+        <p>No pending clients available.</p>
       )}
     </div>
   );

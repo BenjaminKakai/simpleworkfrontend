@@ -1,13 +1,19 @@
-// src/ClientContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const backendUrl = 'http://localhost:3000';
 
-const ClientContext = createContext();
+const defaultContextValue = {
+  clients: [],
+  updateClientStatus: () => {},
+  clientStatusUpdated: false
+};
+
+const ClientContext = createContext(defaultContextValue);
 
 export const ClientProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
+  const [clientStatusUpdated, setClientStatusUpdated] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -26,15 +32,17 @@ export const ClientProvider = ({ children }) => {
     try {
       const response = await axios.put(`${backendUrl}/clients/${clientId}`, { conversation_status: updatedStatus });
       console.log('Client status updated:', response.data);
-      // Update the client status locally
-      setClients(clients.map(client => (client.id === clientId ? { ...client, conversation_status: updatedStatus } : client)));
+      setClients(clients =>
+        clients.map(client => (client.id === clientId ? { ...client, conversation_status: updatedStatus } : client))
+      );
+      setClientStatusUpdated(prev => !prev);  // Toggle this value to trigger re-renders
     } catch (error) {
       console.error('Error updating client status:', error);
     }
   };
 
   return (
-    <ClientContext.Provider value={{ clients, updateClientStatus }}>
+    <ClientContext.Provider value={{ clients, updateClientStatus, clientStatusUpdated }}>
       {children}
     </ClientContext.Provider>
   );

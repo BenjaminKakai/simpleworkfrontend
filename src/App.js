@@ -1,5 +1,6 @@
-// src/App.js
 import React, { useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
+import { ClientProvider } from './ClientProvider';
 import ClientForm from './ClientForm';
 import RemoveClient from './RemoveClient';
 import ClientList from './ClientList';
@@ -17,6 +18,7 @@ const App = () => {
   const [showHighQualityClients, setShowHighQualityClients] = useState(false);
   const [showFinalizedDeals, setShowFinalizedDeals] = useState(false);
   const [showPendingClients, setShowPendingClients] = useState(false);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const handleShowForm = () => {
     setShowForm(true);
@@ -61,6 +63,7 @@ const App = () => {
     setShowHighQualityClients(false);
     setShowFinalizedDeals(true);
     setShowPendingClients(false);
+    setRefetchTrigger(prev => prev + 1);
   };
 
   const handleShowPendingClients = () => {
@@ -70,6 +73,7 @@ const App = () => {
     setShowHighQualityClients(false);
     setShowFinalizedDeals(false);
     setShowPendingClients(true);
+    setRefetchTrigger(prev => prev + 1);
   };
 
   const handleHomeClick = () => {
@@ -82,27 +86,31 @@ const App = () => {
   };
 
   return (
-    <div className="app">
-      <NavBar
-        onShowForm={handleShowForm}
-        onShowRemoveClient={handleShowRemoveClient}
-        onShowClientList={handleShowClientList}
-        onShowHighQualityClients={handleShowHighQualityClients}
-        onShowFinalizedDeals={handleShowFinalizedDeals}
-        onShowPendingClients={handleShowPendingClients}
-        onHomeClick={handleHomeClick} // Pass home click handler to NavBar
-      />
-      <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
-        <h1 className="rotate-text" style={{ fontSize: '24px', animation: 'rotate 20s infinite linear' }}>Sales Department</h1>
+    <ClientProvider>
+      <div className="app">
+        <ErrorBoundary>
+          <NavBar
+            onShowForm={handleShowForm}
+            onShowRemoveClient={handleShowRemoveClient}
+            onShowClientList={handleShowClientList}
+            onShowHighQualityClients={handleShowHighQualityClients}
+            onShowFinalizedDeals={handleShowFinalizedDeals}
+            onShowPendingClients={handleShowPendingClients}
+            onHomeClick={handleHomeClick}
+          />
+          <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
+            <h1 className="rotate-text" style={{ fontSize: '24px', animation: 'rotate 20s infinite linear' }}>Sales Department</h1>
+          </div>
+          {showForm && <ClientForm />}
+          {showRemoveClient && <RemoveClient />}
+          {showClientList && <ClientList onClientRemoved={() => setShowClientList(false)} />}
+          {showHighQualityClients && <HighQualityClients />}
+          {showFinalizedDeals && <FinalizedDeals refetchTrigger={refetchTrigger} />}
+          {showPendingClients && <PendingClients refetchTrigger={refetchTrigger} />}
+          <Footer />
+        </ErrorBoundary>
       </div>
-      {showForm && <ClientForm />}
-      {showRemoveClient && <RemoveClient />}
-      {showClientList && <ClientList />}
-      {showHighQualityClients && <HighQualityClients />}
-      {showFinalizedDeals && <FinalizedDeals />}
-      {showPendingClients && <PendingClients />}
-      <Footer />
-    </div>
+    </ClientProvider>
   );
 };
 

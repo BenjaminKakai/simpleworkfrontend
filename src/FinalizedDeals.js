@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import ClientContext from './ClientContext';
 
-const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
-
-const FinalizedDeals = ({ onDealFinalized }) => {
+const FinalizedDeals = ({ refetchTrigger }) => {
+  const { clientStatusUpdated } = useContext(ClientContext);
+  const backendUrl = 'http://localhost:3000';
   const [finalizedDeals, setFinalizedDeals] = useState([]);
-  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     const fetchFinalizedDeals = async () => {
@@ -18,15 +18,12 @@ const FinalizedDeals = ({ onDealFinalized }) => {
     };
 
     fetchFinalizedDeals();
-  }, [onDealFinalized]); // Update finalized deals when a deal is finalized
+  }, [backendUrl, clientStatusUpdated, refetchTrigger]);
 
   return (
     <div>
-      <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide Finalized Deals' : 'Open Finalized Deals'}
-      </button>
-      {isListVisible && (
-        <>
+      {finalizedDeals.length > 0 ? (
+        <div>
           <h2>Finalized Deals</h2>
           <ul>
             {finalizedDeals.map((client) => (
@@ -35,7 +32,9 @@ const FinalizedDeals = ({ onDealFinalized }) => {
               </li>
             ))}
           </ul>
-        </>
+        </div>
+      ) : (
+        <p>No finalized deals available.</p>
       )}
     </div>
   );
