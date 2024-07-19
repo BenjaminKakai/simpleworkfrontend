@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ClientContext } from './ClientProvider';
 
 const ClientList = ({ onClientRemoved }) => {
-  const { clients: contextClients, updateClientStatus } = useContext(ClientContext);
+  const { clients: contextClients, updateClientStatus, removeClient } = useContext(ClientContext);
   const [filteredClients, setFilteredClients] = useState([]);
   const [isListVisible, setIsListVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,7 +21,7 @@ const ClientList = ({ onClientRemoved }) => {
     try {
       setLoading(true);
       await axios.delete(`http://localhost:3000/clients/${clientId}`);
-      setFilteredClients(prevClients => prevClients.filter(client => client.id !== clientId));
+      removeClient(clientId); // Remove the client from the context
       onClientRemoved(clientId);
     } catch (error) {
       console.error('Error removing client:', error);
@@ -61,9 +61,6 @@ const ClientList = ({ onClientRemoved }) => {
   const toggleClientStatus = async (client, updatedStatus) => {
     try {
       setLoading(true);
-      setFilteredClients(prevClients =>
-        prevClients.map(c => c.id === client.id ? { ...c, conversation_status: updatedStatus } : c)
-      );
       await updateClientStatus(client.id, updatedStatus);
     } catch (error) {
       console.error('Error updating client status:', error);

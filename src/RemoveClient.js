@@ -1,34 +1,28 @@
-// src/RemoveClient.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { ClientContext } from './ClientProvider';
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
 const RemoveClient = () => {
-  const [clients, setClients] = useState([]);
+  const { clients, removeClient } = useContext(ClientContext);
   const [selectedClient, setSelectedClient] = useState('');
   const [isComponentVisible, setIsComponentVisible] = useState(false);
-
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/clients`);
-        setClients(response.data);
-      } catch (error) {
-        console.error('Error fetching clients:', error);
-      }
-    };
-
-    fetchClients();
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const handleRemove = async () => {
+    if (!selectedClient) return;
+
     try {
-      const response = await axios.delete(`${backendUrl}/clients/${selectedClient}`);
-      console.log('Client removed:', response.data); // Log success message
-      // Optionally update client list or handle success
+      setLoading(true);
+      await axios.delete(`${backendUrl}/clients/${selectedClient}`);
+      removeClient(selectedClient); // Update the global state
+      setSelectedClient('');
+      console.log('Client removed successfully');
     } catch (error) {
       console.error('Error removing client:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +34,11 @@ const RemoveClient = () => {
       {isComponentVisible && (
         <div>
           <h2>Remove Client</h2>
-          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
+          <select 
+            value={selectedClient} 
+            onChange={(e) => setSelectedClient(e.target.value)}
+            disabled={loading}
+          >
             <option value="">Select Client</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>
@@ -48,7 +46,12 @@ const RemoveClient = () => {
               </option>
             ))}
           </select>
-          <button onClick={handleRemove} disabled={!selectedClient}>Remove Client</button>
+          <button 
+            onClick={handleRemove} 
+            disabled={!selectedClient || loading}
+          >
+            {loading ? 'Removing...' : 'Remove Client'}
+          </button>
         </div>
       )}
     </div>

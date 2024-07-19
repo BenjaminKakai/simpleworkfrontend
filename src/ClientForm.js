@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { ClientContext } from './ClientProvider';
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
-const ClientForm = ({ onClientAdded, goToHome }) => {
+const ClientForm = ({ goToHome }) => {
+  const { addClient } = useContext(ClientContext);
   const [client, setClient] = useState({
     project: '',
     bedrooms: '',
@@ -12,11 +14,10 @@ const ClientForm = ({ onClientAdded, goToHome }) => {
     email: '',
     fullname: '',
     phone: '',
-    quality: 'low', // Default to 'low' quality
-    conversation_status: 'none', // Default to 'none'
+    quality: 'low',
+    conversation_status: 'none',
   });
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -33,10 +34,8 @@ const ClientForm = ({ onClientAdded, goToHome }) => {
     try {
       const response = await axios.post(`${backendUrl}/clients`, client);
       console.log('Client added:', response.data);
-      if (onClientAdded) {
-        onClientAdded(response.data); // Notify parent component about new client if onClientAdded is defined
-      }
-      setIsSubmitted(true); // Set submitted state to true
+      addClient(response.data); // Add the new client to the context
+      setIsSubmitted(true);
     } catch (error) {
       console.error('There was an error adding the client:', error);
     }
@@ -55,20 +54,11 @@ const ClientForm = ({ onClientAdded, goToHome }) => {
       conversation_status: 'none',
     });
     setIsSubmitted(false);
-    setIsFormVisible(true);
   };
 
   return (
     <div style={{ marginBottom: '20px' }}>
-      {!isFormVisible && !isSubmitted && (
-        <button
-          style={{ marginBottom: '10px' }}
-          onClick={() => setIsFormVisible(true)}
-        >
-          New Client
-        </button>
-      )}
-      {isFormVisible && !isSubmitted && (
+      {!isSubmitted ? (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', margin: '0 auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <label style={{ display: 'flex', alignItems: 'center' }}>
@@ -110,8 +100,7 @@ const ClientForm = ({ onClientAdded, goToHome }) => {
           </div>
           <button type="submit">Add Client</button>
         </form>
-      )}
-      {isSubmitted && (
+      ) : (
         <div>
           <p>Client successfully added!</p>
           <button onClick={handleAddAnotherClient}>Add Another Client</button>

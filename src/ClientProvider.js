@@ -1,4 +1,3 @@
-// ClientProvider.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -22,6 +21,14 @@ export const ClientProvider = ({ children }) => {
     fetchClients();
   }, []);
 
+  const addClient = (newClient) => {
+    setClients(prevClients => [...prevClients, newClient]);
+  };
+
+  const removeClient = (clientId) => {
+    setClients(prevClients => prevClients.filter(client => client.id !== clientId));
+  };
+
   const updateClientStatus = async (clientId, newStatus) => {
     try {
       await axios.put(`${backendUrl}/clients/${clientId}`, { conversation_status: newStatus });
@@ -34,7 +41,7 @@ export const ClientProvider = ({ children }) => {
   };
 
   return (
-    <ClientContext.Provider value={{ clients, updateClientStatus }}>
+    <ClientContext.Provider value={{ clients, addClient, removeClient, updateClientStatus }}>
       {children}
     </ClientContext.Provider>
   );

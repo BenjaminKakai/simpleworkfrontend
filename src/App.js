@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import { ClientProvider } from './ClientProvider';
 import ClientForm from './ClientForm';
@@ -9,80 +9,45 @@ import FinalizedDeals from './FinalizedDeals';
 import PendingClients from './PendingClients';
 import NavBar from './NavBar';
 import Footer from './Footer';
+import axios from 'axios';
 import './App.css';
 
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
+
 const App = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [showRemoveClient, setShowRemoveClient] = useState(false);
-  const [showClientList, setShowClientList] = useState(false);
-  const [showHighQualityClients, setShowHighQualityClients] = useState(false);
-  const [showFinalizedDeals, setShowFinalizedDeals] = useState(false);
-  const [showPendingClients, setShowPendingClients] = useState(false);
+  const [activeView, setActiveView] = useState('home');
+  const [clients, setClients] = useState([]);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  const handleShowForm = () => {
-    setShowForm(true);
-    setShowRemoveClient(false);
-    setShowClientList(false);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(false);
-  };
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/clients`);
+        setClients(response.data);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+      }
+    };
 
-  const handleShowRemoveClient = () => {
-    setShowForm(false);
-    setShowRemoveClient(true);
-    setShowClientList(false);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(false);
-  };
+    fetchClients();
+  }, [refetchTrigger]);
 
-  const handleShowClientList = () => {
-    setShowForm(false);
-    setShowRemoveClient(false);
-    setShowClientList(true);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(false);
-  };
-
-  const handleShowHighQualityClients = () => {
-    setShowForm(false);
-    setShowRemoveClient(false);
-    setShowClientList(false);
-    setShowHighQualityClients(true);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(false);
-  };
-
-  const handleShowFinalizedDeals = () => {
-    setShowForm(false);
-    setShowRemoveClient(false);
-    setShowClientList(false);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(true);
-    setShowPendingClients(false);
-    setRefetchTrigger(prev => prev + 1);
-  };
-
-  const handleShowPendingClients = () => {
-    setShowForm(false);
-    setShowRemoveClient(false);
-    setShowClientList(false);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(true);
-    setRefetchTrigger(prev => prev + 1);
+  const handleShowView = (view) => {
+    setActiveView(view);
   };
 
   const handleHomeClick = () => {
-    setShowForm(false);
-    setShowRemoveClient(false);
-    setShowClientList(false);
-    setShowHighQualityClients(false);
-    setShowFinalizedDeals(false);
-    setShowPendingClients(false);
+    setActiveView('home');
+  };
+
+  const handleClientAdded = (newClient) => {
+    setClients([...clients, newClient]);
+    setRefetchTrigger(prev => prev + 1);
+  };
+
+  const handleClientRemoved = (removedClientId) => {
+    setClients(clients.filter(client => client.id !== removedClientId));
+    setRefetchTrigger(prev => prev + 1);
   };
 
   return (
@@ -90,23 +55,24 @@ const App = () => {
       <div className="app">
         <ErrorBoundary>
           <NavBar
-            onShowForm={handleShowForm}
-            onShowRemoveClient={handleShowRemoveClient}
-            onShowClientList={handleShowClientList}
-            onShowHighQualityClients={handleShowHighQualityClients}
-            onShowFinalizedDeals={handleShowFinalizedDeals}
-            onShowPendingClients={handleShowPendingClients}
+            onShowForm={() => handleShowView('form')}
+            onShowRemoveClient={() => handleShowView('removeClient')}
+            onShowClientList={() => handleShowView('clientList')}
+            onShowHighQualityClients={() => handleShowView('highQualityClients')}
+            onShowFinalizedDeals={() => handleShowView('finalizedDeals')}
+            onShowPendingClients={() => handleShowView('pendingClients')}
             onHomeClick={handleHomeClick}
           />
           <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
             <h1 className="rotate-text" style={{ fontSize: '24px', animation: 'rotate 20s infinite linear' }}>Sales Department</h1>
           </div>
-          {showForm && <ClientForm goToHome={handleHomeClick} />}
-          {showRemoveClient && <RemoveClient />}
-          {showClientList && <ClientList onClientRemoved={() => setShowClientList(false)} />}
-          {showHighQualityClients && <HighQualityClients />}
-          {showFinalizedDeals && <FinalizedDeals refetchTrigger={refetchTrigger} />}
-          {showPendingClients && <PendingClients refetchTrigger={refetchTrigger} />}
+          {activeView === 'home' && <h2>Welcome to the Sales Department</h2>}
+          {activeView === 'form' && <ClientForm onClientAdded={handleClientAdded} goToHome={handleHomeClick} />}
+          {activeView === 'removeClient' && <RemoveClient onClientRemoved={handleClientRemoved} />}
+          {activeView === 'clientList' && <ClientList clients={clients} onClientRemoved={handleClientRemoved} />}
+          {activeView === 'highQualityClients' && <HighQualityClients clients={clients} />}
+          {activeView === 'finalizedDeals' && <FinalizedDeals clients={clients} refetchTrigger={refetchTrigger} />}
+          {activeView === 'pendingClients' && <PendingClients clients={clients} refetchTrigger={refetchTrigger} />}
           <Footer />
         </ErrorBoundary>
       </div>
