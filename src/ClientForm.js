@@ -96,29 +96,26 @@ const ClientForm = ({ onClientAdded, goToHome }) => {
               <input type="text" name="fullname" value={client.fullname} onChange={handleChange} required />
             </label>
             <label style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '10px', width: '100px' }}>Phone:</span>
-              <input type="text" name="phone" value={client.phone} onChange={handleChange} required />
+              <span style={{ marginRight: '10px', width: '100px' }}>Phone Number:</span>
+              <input type="tel" name="phone" value={client.phone} onChange={handleChange} required />
             </label>
             <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>High Quality:</span>
               <input type="checkbox" name="quality" checked={client.quality === 'high'} onChange={handleChange} />
-              <span style={{ marginLeft: '10px' }}>High Quality</span>
             </label>
             <label style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '10px', width: '100px' }}>Conversation Status:</span>
               <input type="checkbox" name="conversation_status" checked={client.conversation_status === 'ongoing'} onChange={handleChange} />
-              <span style={{ marginLeft: '10px' }}>Ongoing Conversation</span>
             </label>
           </div>
-          <button type="submit" style={{ marginTop: '10px', width: '100%' }}>Add Client</button>
+          <button type="submit">Add Client</button>
         </form>
       )}
       {isSubmitted && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <button style={{ marginBottom: '10px' }} onClick={handleAddAnotherClient}>
-            Add Another Client
-          </button>
-          <button onClick={goToHome}>
-            Go Back Home
-          </button>
+        <div>
+          <p>Client successfully added!</p>
+          <button onClick={handleAddAnotherClient}>Add Another Client</button>
+          <button onClick={goToHome}>Go Back Home</button>
         </div>
       )}
     </div>

@@ -101,7 +101,7 @@ const App = () => {
           <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
             <h1 className="rotate-text" style={{ fontSize: '24px', animation: 'rotate 20s infinite linear' }}>Sales Department</h1>
           </div>
-          {showForm && <ClientForm />}
+          {showForm && <ClientForm goToHome={handleHomeClick} />}
           {showRemoveClient && <RemoveClient />}
           {showClientList && <ClientList onClientRemoved={() => setShowClientList(false)} />}
           {showHighQualityClients && <HighQualityClients />}
