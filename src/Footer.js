@@ -5,31 +5,33 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-logo">
-        <img src={tangentLogo} alt="Tangent Homes Ltd Logo" className="logo-img" />
+        <a href="https://tangenthomesltd.com/">
+          <img src={tangentLogo} alt="Tangent Homes Ltd Logo" className="logo-img" />
+        </a>
       </div>
       <div className="footer-columns">
         <div className="footer-column">
           <h3>CONTACT</h3>
           <p>Westpark Towers, 7th Floor, Rm706 Mpesi Lane, Westlands.</p>
-          <p>Info@tangenthomesltd.com</p>
+          <p><a href="mailto:info@tangenthomesltd.com">info@tangenthomesltd.com</a></p>
           <p>0713 222225 / 0713938985</p>
         </div>
         <div className="footer-column">
           <h3>USEFUL LINKS</h3>
           <ul>
-            <li>About Us</li>
-            <li>Terms & Conditions</li>
-            <li>User Guide</li>
-            <li>Support Center</li>
-            <li>Privacy Policy</li>
+            <li><a href="https://tangenthomesltd.com/overview/">About Us</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">User Guide</a></li>
+            <li><a href="https://tangenthomesltd.com/contact-us/#">Support Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
           </ul>
         </div>
       </div>
       <div className="footer-social">
-        <a href="#">Facebook</a>
-        <a href="#">Instagram</a>
-        <a href="#">Twitter</a>
-        <a href="#">LinkedIn</a>
+        <a href="https://www.facebook.com/TangentHomes" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://www.instagram.com/tangenthomes/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://x.com/HomesTangent" target="_blank" rel="noopener noreferrer">Twitter</a>
+        <a href="https://www.linkedin.com/in/tangent-homes-b07a98231/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
     </footer>
   );
