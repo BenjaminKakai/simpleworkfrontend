@@ -212,7 +212,7 @@ const ClientList = ({ onClientRemoved }) => {
     <div style={{ margin: '0 auto', maxWidth: '800px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <button onClick={() => setIsListVisible(!isListVisible)}>
-          {isListVisible ? 'Hide Client List' : 'Open Client List'}
+          {isListVisible ? 'Hide Client List' : 'Show Client List'}
         </button>
         <input
           type="text"

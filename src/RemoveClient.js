@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { ClientContext } from './ClientProvider';
+import './RemoveClient.css'; // Ensure you have a CSS file for styling
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
@@ -27,13 +28,13 @@ const RemoveClient = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => setIsComponentVisible(!isComponentVisible)}>
-        {isComponentVisible ? 'Hide Remove Client' : 'Remove Client'}
+    <div className="remove-client-container">
+      <button className="toggle-button" onClick={() => setIsComponentVisible(!isComponentVisible)}>
+        {isComponentVisible ? 'Hide the List' : 'Select a Client to Drop'}
       </button>
       {isComponentVisible && (
-        <div>
-          <h2>Remove Client</h2>
+        <div className="remove-client-content">
+          
           <select 
             value={selectedClient} 
             onChange={(e) => setSelectedClient(e.target.value)}

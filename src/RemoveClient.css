@@ -1,0 +1,17 @@
+.remove-client-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Center horizontally */
+    padding-top: 20px;      /* Adjust top padding as needed */
+  }
+  
+  .toggle-button {
+    margin-bottom: 20px;    /* Space between button and content */
+  }
+  
+  .remove-client-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Center content horizontally */
+  }
+  
