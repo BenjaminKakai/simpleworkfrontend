@@ -13,19 +13,17 @@ const Footer = () => {
         </div>
         <div className="footer-columns">
           <div className="footer-column">
-            <h3>CONTACT</h3>
+    
             <p>Westpark Towers, 7th Floor, <br/>Rm706 Mpesi Lane, Westlands.</p>
             <p><a href="mailto:info@tangenthomesltd.com">info@tangenthomesltd.com</a></p>
             <p>0713 222225 / 0713938985</p>
           </div>
           <div className="footer-column">
-            <h3>USEFUL LINKS</h3>
             <ul>
+              <br/>
+              <br/>
               <li><a href="https://tangenthomesltd.com/overview/">About Us</a></li>
-              <li><a href="#">Terms & Conditions</a></li>
-              <li><a href="#">User Guide</a></li>
               <li><a href="https://tangenthomesltd.com/contact-us/#">Support Center</a></li>
-              <li><a href="#">Privacy Policy</a></li>
             </ul>
           </div>
         </div>

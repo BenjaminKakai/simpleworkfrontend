@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './NavBar.css'; // Import the NavBar-specific CSS
 
 const NavBar = ({
   onShowForm,
@@ -7,7 +8,7 @@ const NavBar = ({
   onShowHighQualityClients,
   onShowFinalizedDeals,
   onShowPendingClients,
-  onHomeClick, // Add this prop to notify parent about home click
+  onHomeClick,
 }) => {
   const [activeTab, setActiveTab] = useState(null);
 
