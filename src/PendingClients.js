@@ -1,26 +1,17 @@
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import ClientContext from './ClientContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { ClientContext } from './ClientProvider';
 
-const PendingClients = ({ refetchTrigger }) => {
-  const { clientStatusUpdated } = useContext(ClientContext);
-  const backendUrl = 'http://localhost:3000';
+const PendingClients = ({ refreshTrigger }) => {
+  const { clients, clientStatusUpdated } = useContext(ClientContext);
   const [pendingClients, setPendingClients] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPendingClients = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/clients/pending`);
-        setPendingClients(response.data);
-      } catch (error) {
-        console.error('Error fetching pending clients:', error);
-        setError(error);
-      }
-    };
-
-    fetchPendingClients();
-  }, [backendUrl, clientStatusUpdated, refetchTrigger]);
+    if (clients) {
+      const pending = clients.filter(client => client.conversation_status === 'Pending');
+      setPendingClients(pending);
+    }
+  }, [clients, clientStatusUpdated, refreshTrigger]);
 
   if (error) {
     return (
@@ -34,15 +25,13 @@ const PendingClients = ({ refetchTrigger }) => {
   return (
     <div>
       {pendingClients.length > 0 ? (
-        <div>
-          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
-            {pendingClients.map((client) => (
-              <li key={client.id}>
-                {client.fullname} - {client.project}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
+          {pendingClients.map((client) => (
+            <li key={client.id}>
+              {client.fullname} - {client.project}
+            </li>
+          ))}
+        </ul>
       ) : (
         <p>No pending clients available.</p>
       )}

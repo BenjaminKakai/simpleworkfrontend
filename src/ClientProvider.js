@@ -7,6 +7,7 @@ export const ClientContext = createContext();
 
 export const ClientProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
+  const [clientStatusUpdated, setClientStatusUpdated] = useState(false);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -19,7 +20,7 @@ export const ClientProvider = ({ children }) => {
     };
 
     fetchClients();
-  }, []);
+  }, [clientStatusUpdated]); // Dependency array now includes clientStatusUpdated
 
   const addClient = (newClient) => {
     setClients(prevClients => [...prevClients, newClient]);
@@ -29,19 +30,23 @@ export const ClientProvider = ({ children }) => {
     setClients(prevClients => prevClients.filter(client => client.id !== clientId));
   };
 
-  const updateClientStatus = async (clientId, newStatus) => {
+  const updateClientStatus = async (clientId, updatedStatus) => {
     try {
-      await axios.put(`${backendUrl}/clients/${clientId}`, { conversation_status: newStatus });
-      // Optimistically update local state
-      setClients(clients.map(client => client.id === clientId ? { ...client, conversation_status: newStatus } : client));
+      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { conversation_status: updatedStatus });
+      const updatedClient = response.data;
+      setClients(prevClients =>
+        prevClients.map(client => (client.id === clientId ? updatedClient : client))
+      );
+      setClientStatusUpdated(prev => !prev); // Toggle this value to trigger re-renders
+      return updatedClient;
     } catch (error) {
       console.error('Error updating client status:', error);
-      // Handle error or rollback state if necessary
+      throw error;
     }
   };
 
   return (
-    <ClientContext.Provider value={{ clients, addClient, removeClient, updateClientStatus }}>
+    <ClientContext.Provider value={{ clients, addClient, removeClient, updateClientStatus, clientStatusUpdated }}>
       {children}
     </ClientContext.Provider>
   );

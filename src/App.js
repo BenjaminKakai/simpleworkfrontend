@@ -29,7 +29,7 @@ const App = () => {
     };
 
     fetchClients();
-  }, []);
+  }, []); // No dependencies needed for initial fetch
 
   const handleShowView = (view) => {
     setActiveView(view);
@@ -66,10 +66,10 @@ const App = () => {
           {activeView === 'home' && <h2>Welcome to the Sales Department</h2>}
           {activeView === 'form' && <ClientForm onClientAdded={handleClientAdded} goToHome={handleHomeClick} />}
           {activeView === 'removeClient' && <RemoveClient onClientRemoved={handleClientRemoved} />}
-          {activeView === 'clientList' && <ClientList clients={clients} onClientRemoved={handleClientRemoved} />}
-          {activeView === 'highQualityClients' && <HighQualityClients clients={clients} />}
-          {activeView === 'finalizedDeals' && <FinalizedDeals clients={clients} />}
-          {activeView === 'pendingClients' && <PendingClients clients={clients} />}
+          {activeView === 'clientList' && <ClientList onClientRemoved={handleClientRemoved} />}
+          {activeView === 'highQualityClients' && <HighQualityClients />}
+          {activeView === 'finalizedDeals' && <FinalizedDeals />}
+          {activeView === 'pendingClients' && <PendingClients />}
           <Footer />
         </ErrorBoundary>
       </div>

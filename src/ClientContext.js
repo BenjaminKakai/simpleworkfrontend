@@ -26,16 +26,13 @@ export const ClientProvider = ({ children }) => {
     };
 
     fetchClients();
-  }, []);
+  }, [clientStatusUpdated]); // Re-fetch clients whenever the status is updated
 
   const updateClientStatus = async (clientId, updatedStatus) => {
     try {
       const response = await axios.put(`${backendUrl}/clients/${clientId}`, { conversation_status: updatedStatus });
       console.log('Client status updated:', response.data);
-      setClients(clients =>
-        clients.map(client => (client.id === clientId ? { ...client, conversation_status: updatedStatus } : client))
-      );
-      setClientStatusUpdated(prev => !prev);  // Toggle this value to trigger re-renders
+      setClientStatusUpdated(prev => !prev); // Toggle this value to trigger re-renders
     } catch (error) {
       console.error('Error updating client status:', error);
     }

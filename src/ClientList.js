@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import axios from 'axios';
 import { ClientContext } from './ClientProvider';
+import axios from 'axios';  // Add this line
 
 const ClientList = ({ onClientRemoved }) => {
-  const { clients: contextClients, updateClientStatus, removeClient } = useContext(ClientContext);
+  const { clients: contextClients, removeClient, updateClientStatus } = useContext(ClientContext);
   const [filteredClients, setFilteredClients] = useState([]);
   const [isListVisible, setIsListVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [clientToUpdate, setClientToUpdate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [newDocuments, setNewDocuments] = useState([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [error, setError] = useState(null);
+  const [expandedClient, setExpandedClient] = useState(null); // State for toggling buttons
 
   useEffect(() => {
     if (contextClients) {
@@ -61,18 +61,6 @@ const ClientList = ({ onClientRemoved }) => {
       setFilteredClients(filtered);
     }
   }, [contextClients]);
-
-  const toggleClientStatus = async (client, updatedStatus) => {
-    try {
-      setLoading(true);
-      await updateClientStatus(client.id, updatedStatus);
-    } catch (error) {
-      setError('Error updating client status. Please try again.');
-      console.error('Error updating client status:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleExpoundClient = async (client) => {
     setSelectedClient(client);
@@ -132,7 +120,6 @@ const ClientList = ({ onClientRemoved }) => {
       const response = await axios.get(`http://localhost:3000/documents/${documentId}`, { responseType: 'blob' });
       const contentType = response.headers['content-type'];
 
-      // Handle cases where Content-Disposition might be missing
       let filename = 'download';
       const contentDisposition = response.headers['content-disposition'];
       if (contentDisposition && contentDisposition.includes('filename=')) {
@@ -143,10 +130,8 @@ const ClientList = ({ onClientRemoved }) => {
       const url = window.URL.createObjectURL(blob);
 
       if (contentType.startsWith('image/')) {
-        // For images, open in a new tab
         window.open(url, '_blank');
       } else {
-        // For other file types, trigger download
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
@@ -160,6 +145,44 @@ const ClientList = ({ onClientRemoved }) => {
       console.error('Error opening document:', error);
     }
   };
+
+  const pasteClientName = async (client, status) => {
+    try {
+      const updatedStatus = status === 'Finalized Deal' ? 'Finalized Deal' : 'Pending';
+      await updateClientStatus(client.id, updatedStatus);
+    } catch (error) {
+      console.error('Error pasting client name:', error);
+      setError('Error updating client status. Please try again.');
+    }
+  };
+
+  const toggleButtons = (client) => {
+    setExpandedClient(expandedClient === client.id ? null : client.id);
+  };
+
+  const renderClientActions = (client) => (
+    <>
+      <button onClick={() => handleRemoveClient(client.id)} disabled={loading}>
+        {loading ? 'Removing...' : 'Remove'}
+      </button>
+      <button onClick={() => handleExpoundClient(client)} disabled={loading}>
+        Expound
+      </button>
+      <button onClick={() => toggleButtons(client)} disabled={loading}>
+        More Actions
+      </button>
+      {expandedClient === client.id && (
+        <div>
+          <button onClick={() => pasteClientName(client, 'Finalized Deal')} disabled={loading}>
+            Add to Finalized
+          </button>
+          <button onClick={() => pasteClientName(client, 'Pending')} disabled={loading}>
+            Add to Pending
+          </button>
+        </div>
+      )}
+    </>
+  );
 
   if (!contextClients) {
     return <div>Loading clients...</div>;
@@ -180,7 +203,7 @@ const ClientList = ({ onClientRemoved }) => {
           disabled={loading}
         />
       </div>
-      
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {isListVisible && !selectedClient && (
@@ -189,26 +212,7 @@ const ClientList = ({ onClientRemoved }) => {
             <div key={client.id} id={`client-${client.id}`} style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{client.fullname} - {client.project} - {client.conversation_status}</span>
               <div>
-                <button onClick={() => handleRemoveClient(client.id)} disabled={loading}>
-                  {loading ? 'Removing...' : 'Remove'}
-                </button>
-                {clientToUpdate === client.id ? (
-                  <>
-                    <button onClick={() => toggleClientStatus(client, 'Pending')} disabled={loading}>
-                      {loading ? 'Updating...' : 'Pending'}
-                    </button>
-                    <button onClick={() => toggleClientStatus(client, 'Finalized Deal')} disabled={loading}>
-                      {loading ? 'Updating...' : 'Finalize Deal'}
-                    </button>
-                  </>
-                ) : (
-                  <button onClick={() => setClientToUpdate(client.id)} disabled={loading}>
-                    {loading ? 'Updating...' : 'Update'}
-                  </button>
-                )}
-                <button onClick={() => handleExpoundClient(client)} disabled={loading}>
-                  Expound
-                </button>
+                {renderClientActions(client)}
               </div>
             </div>
           ))}
@@ -221,7 +225,7 @@ const ClientList = ({ onClientRemoved }) => {
           {Object.entries(selectedClient).map(([key, value]) => (
             <p key={key}>{key}: {value}</p>
           ))}
-          
+
           <h3>Uploaded Documents</h3>
           <div style={{ listStyleType: 'none', padding: 0 }}>
             {documents.map((doc) => (
@@ -235,21 +239,22 @@ const ClientList = ({ onClientRemoved }) => {
             ))}
           </div>
 
-          <h3>New Documents</h3>
+          <h3>Add New Documents</h3>
           <input type="file" multiple onChange={handleFileChange} />
           <ul>
-            {newDocuments.map((doc, index) => (
+            {newDocuments.map((file, index) => (
               <li key={index}>
-                {doc.name}
+                {file.name}
                 <button onClick={() => handleRemoveDocument(index)}>Remove</button>
               </li>
             ))}
           </ul>
-
-          <button onClick={handleSaveDocuments} disabled={!hasUnsavedChanges}>
-            Save Documents
+          <button onClick={handleSaveDocuments} disabled={loading || newDocuments.length === 0}>
+            {loading ? 'Uploading...' : 'Save Documents'}
           </button>
-          <button onClick={handleGoBack}>Go Back to Client List</button>
+          <button onClick={handleGoBack}>
+            Go Back
+          </button>
         </div>
       )}
     </div>

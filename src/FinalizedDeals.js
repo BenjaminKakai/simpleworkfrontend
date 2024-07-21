@@ -1,37 +1,27 @@
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import ClientContext from './ClientContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { ClientContext } from './ClientProvider';
 
-const FinalizedDeals = ({ refetchTrigger }) => {
-  const { clientStatusUpdated } = useContext(ClientContext);
-  const backendUrl = 'http://localhost:3000';
+const FinalizedDeals = ({ refreshTrigger }) => {
+  const { clients, clientStatusUpdated } = useContext(ClientContext);
   const [finalizedDeals, setFinalizedDeals] = useState([]);
 
   useEffect(() => {
-    const fetchFinalizedDeals = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/clients/finalized`);
-        setFinalizedDeals(response.data);
-      } catch (error) {
-        console.error('Error fetching finalized deals:', error);
-      }
-    };
-
-    fetchFinalizedDeals();
-  }, [backendUrl, clientStatusUpdated, refetchTrigger]);
+    if (clients) {
+      const deals = clients.filter(client => client.conversation_status === 'Finalized Deal');
+      setFinalizedDeals(deals);
+    }
+  }, [clients, clientStatusUpdated, refreshTrigger]);
 
   return (
     <div>
       {finalizedDeals.length > 0 ? (
-        <div>
-          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
-            {finalizedDeals.map((client) => (
-              <li key={client.id}>
-                {client.fullname} - {client.project}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
+          {finalizedDeals.map((client) => (
+            <li key={client.id}>
+              {client.fullname} - {client.project}
+            </li>
+          ))}
+        </ul>
       ) : (
         <p>No finalized deals available.</p>
       )}
