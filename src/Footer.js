@@ -1,30 +1,33 @@
 import React from 'react';
 import tangentLogo from './Tangent logo.jpg'; // Ensure correct file path and extension
+import './Footer.css'; // Make sure to create and import this CSS file
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer-logo">
-        <a href="https://tangenthomesltd.com/">
-          <img src={tangentLogo} alt="Tangent Homes Ltd Logo" className="logo-img" />
-        </a>
-      </div>
-      <div className="footer-columns">
-        <div className="footer-column">
-          <h3>CONTACT</h3>
-          <p>Westpark Towers, 7th Floor, Rm706 Mpesi Lane, Westlands.</p>
-          <p><a href="mailto:info@tangenthomesltd.com">info@tangenthomesltd.com</a></p>
-          <p>0713 222225 / 0713938985</p>
+      <div className="footer-content">
+        <div className="footer-logo">
+          <a href="https://tangenthomesltd.com/">
+            <img src={tangentLogo} alt="Tangent Homes Ltd Logo" className="logo-img responsive-logo" />
+          </a>
         </div>
-        <div className="footer-column">
-          <h3>USEFUL LINKS</h3>
-          <ul>
-            <li><a href="https://tangenthomesltd.com/overview/">About Us</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
-            <li><a href="#">User Guide</a></li>
-            <li><a href="https://tangenthomesltd.com/contact-us/#">Support Center</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-          </ul>
+        <div className="footer-columns">
+          <div className="footer-column">
+            <h3>CONTACT</h3>
+            <p>Westpark Towers, 7th Floor, <br/>Rm706 Mpesi Lane, Westlands.</p>
+            <p><a href="mailto:info@tangenthomesltd.com">info@tangenthomesltd.com</a></p>
+            <p>0713 222225 / 0713938985</p>
+          </div>
+          <div className="footer-column">
+            <h3>USEFUL LINKS</h3>
+            <ul>
+              <li><a href="https://tangenthomesltd.com/overview/">About Us</a></li>
+              <li><a href="#">Terms & Conditions</a></li>
+              <li><a href="#">User Guide</a></li>
+              <li><a href="https://tangenthomesltd.com/contact-us/#">Support Center</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div className="footer-social">

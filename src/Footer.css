@@ -1,0 +1,65 @@
+/* Footer.css */
+.footer {
+    background-color: lightgray; /* Adjust as needed */
+    padding: 20px; /* Adjust padding as needed */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Align items vertically */
+    gap: 60px; /* Increased space between columns */
+    max-width: 1200px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the content with even space on both sides */
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center; /* Center logo vertically */
+    margin-right: auto; /* Push the logo to the left */
+}
+
+.logo-img {
+    height: 50px; /* Adjust the logo size as needed */
+    display: block; /* Remove any extra space around the image */
+}
+
+.footer-columns {
+    display: flex;
+    gap: 150px; /* Increased space between columns */
+}
+
+.footer-column {
+    /* Add styling for the individual columns if needed */
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center; /* Center the social links horizontally */
+    margin-top: 20px; /* Add some space above the social links */
+}
+
+.footer-social a {
+    margin: 0 10px; /* Space between social links */
+    text-decoration: none; /* Remove underline from links */
+    color: black; /* Adjust color as needed */
+}
+
+/* Optional: Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 20px; /* Adjust spacing for smaller screens */
+        text-align: center; /* Center align text on smaller screens */
+    }
+
+    .footer-columns {
+        flex-direction: column;
+        gap: 20px; /* Adjust spacing for columns on smaller screens */
+    }
+
+    .footer-social {
+        flex-direction: column;
+        gap: 10px; /* Space between social links on smaller screens */
+    }
+}

@@ -1,14 +1,24 @@
 /* App.css */
-.app {
-  text-align: center;
-  padding: 20px;
-  min-height: 100vh; /* Ensure app fills the viewport */
-  display: flex;
-  flex-direction: column;
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar {
-  margin-bottom: 20px;
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures full viewport height */
+}
+
+.main-content {
+  flex: 1 0 auto; /* Expands to fill space, pushing footer down */
+}
+
+.footer {
+  flex-shrink: 0; /* Ensures the footer doesn't shrink */
+  background-color: lightgray; /* Adjust as needed */
+  padding: 20px; /* Adjust padding as needed */
 }
 
 .centered-text {
@@ -25,71 +35,52 @@
   from {
     transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -ms-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
   }
 }
 
-/* Footer styling */
-.footer {
-  background-color: #000;
-  color: #fff;
-  padding: 20px;
-  margin-top: auto; /* Push footer to the bottom */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+/* App.css */
+
+/* Existing styles */
+
+.home-overlay {
+    position: fixed; /* Cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: orange; /* Orange background */
+    z-index: 999; /* Ensure it is above other content */
+    display: flex;
+    justify-content: center; /* Center the text horizontally */
+    align-items: center; /* Center the text vertically */
+    transition: opacity 0.5s ease-out; /* Smooth fade-out effect */
 }
 
-.logo-img {
-  width: 300px; /* Adjust size as needed */
-  height: auto; /* Maintain aspect ratio */
-  margin-top: 10px; /* Center vertically */
-  margin-bottom: -150px; /* Adjust bottom margin */
-  margin-right: 1000px; /* Adjust right margin */
+.beating-text {
+    font-size: 5rem; /* Adjust size as needed */
+    color: orange; /* Orange text color */
+    font-weight: bold;
+    animation: beat 2s infinite; /* Beating animation */
 }
 
-.footer-columns {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px; /* Space between columns and social media */
+@keyframes beat {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
 }
 
-.footer-column {
-  text-align: left; /* Align text left in columns */
-  width: 50%; /* Ensure each column takes 50% of the available space */
-}
-
-.footer-column h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.footer-column ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.footer-column ul li {
-  margin-bottom: 5px;
-}
-
-.footer-social {
-  display: flex;
-  justify-content: center; /* Align links in the center */
-  margin-top: 10px; /* Space above social media links */
-}
-
-.footer-social a {
-  text-decoration: none;
-  color: #fff;
-  margin: 0 10px; /* Space between social media links */
+/* Ensure the footer is at the bottom */
+footer {
+    position: relative;
+    z-index: 1;
 }
