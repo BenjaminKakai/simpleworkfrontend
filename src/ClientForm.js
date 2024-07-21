@@ -1,6 +1,17 @@
 import React, { useState, useContext, useRef } from 'react';
-import axios from 'axios';
+import axiosInstance from './api'; // This should be your configured axios instance
 import { ClientContext } from './ClientProvider';
+
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return true;
+  }
+};
 
 const backendUrl = 'http://localhost:3000';
 
@@ -15,7 +26,7 @@ const ClientForm = ({ goToHome }) => {
     fullname: '',
     phone: '',
     quality: 'low',
-    conversation_status: 'Pending', // Changed to 'Pending'
+    conversation_status: 'Pending',
   });
 
   const [paymentDetails, setPaymentDetails] = useState({
@@ -81,25 +92,36 @@ const ClientForm = ({ goToHome }) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+  
     try {
+      const token = localStorage.getItem('token');
+      
+      if (!token || isTokenExpired(token)) {
+        console.log('No token or token expired');
+        setError('Your session has expired. Please log in again.');
+        setIsLoading(false);
+        return;
+      }
+  
       const clientData = {
         ...client,
         paymentDetails: paymentDetails,
       };
-      const response = await axios.post(`${backendUrl}/clients`, clientData);
+  
+      const response = await axiosInstance.post(`/clients`, clientData);
       addClient(response.data);
-
+  
       if (documents.length > 0) {
         const formData = new FormData();
         documents.forEach((doc) => {
           formData.append('documents', doc.file);
         });
-
-        await axios.post(`${backendUrl}/clients/${response.data.id}/documents`, formData, {
+  
+        await axiosInstance.post(`/clients/${response.data.id}/documents`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
-
+  
       setIsSubmitted(true);
     } catch (error) {
       console.error('Error adding client or uploading documents:', error);
@@ -119,7 +141,7 @@ const ClientForm = ({ goToHome }) => {
       fullname: '',
       phone: '',
       quality: 'low',
-      conversation_status: 'Pending', // Reset to 'Pending'
+      conversation_status: 'Pending',
     });
     setPaymentDetails({
       amountPaid: '',
