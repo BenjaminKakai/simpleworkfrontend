@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ClientContext } from './ClientProvider';
+import './FinalizedDeals.css'; // Import the CSS file
 
 const FinalizedDeals = ({ refreshTrigger }) => {
   const { clients, clientStatusUpdated } = useContext(ClientContext);
@@ -13,9 +14,9 @@ const FinalizedDeals = ({ refreshTrigger }) => {
   }, [clients, clientStatusUpdated, refreshTrigger]);
 
   return (
-    <div>
+    <div className="finalized-deals-container">
       {finalizedDeals.length > 0 ? (
-        <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
+        <ul className="finalized-deals-list">
           {finalizedDeals.map((client) => (
             <li key={client.id}>
               {client.fullname} - {client.project}

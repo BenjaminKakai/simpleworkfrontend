@@ -1,0 +1,14 @@
+.finalized-deals-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Center horizontally */
+    padding-top: 20px;      /* Adjust top padding as needed */
+  }
+  
+  .finalized-deals-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;       /* Ensure list items are left-aligned */
+  }
+  
