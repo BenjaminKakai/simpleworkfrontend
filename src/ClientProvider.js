@@ -30,15 +30,16 @@ export const ClientProvider = ({ children }) => {
     setClients(prevClients => prevClients.filter(client => client.id !== clientId));
   };
 
-  const updateClientStatus = async (clientId, updatedStatus) => {
+  const updateClientStatus = async (clientId, status) => {
     try {
-      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { conversation_status: updatedStatus });
-      const updatedClient = response.data;
-      setClients(prevClients =>
-        prevClients.map(client => (client.id === clientId ? updatedClient : client))
+      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { status });
+      setClients(prevClients => 
+        prevClients.map(client => 
+          client.id === clientId ? { ...client, conversation_status: status } : client
+        )
       );
       setClientStatusUpdated(prev => !prev); // Toggle this value to trigger re-renders
-      return updatedClient;
+      return response.data;
     } catch (error) {
       console.error('Error updating client status:', error);
       throw error;

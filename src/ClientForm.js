@@ -15,7 +15,14 @@ const ClientForm = ({ goToHome }) => {
     fullname: '',
     phone: '',
     quality: 'low',
-    conversation_status: 'none',
+    conversation_status: 'Pending', // Changed to 'Pending'
+  });
+
+  const [paymentDetails, setPaymentDetails] = useState({
+    amountPaid: '',
+    paymentDuration: '',
+    totalAmount: '',
+    balance: '',
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -39,11 +46,19 @@ const ClientForm = ({ goToHome }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setClient((prevClient) => ({
-      ...prevClient,
-      [name]: type === 'checkbox' ? (checked ? 'ongoing' : 'none') : value,
-      quality: name === 'quality' ? (checked ? 'high' : 'low') : prevClient.quality,
-    }));
+    if (name in client) {
+      setClient((prevClient) => ({
+        ...prevClient,
+        [name]: type === 'checkbox' ? (checked ? 'high' : 'low') : value,
+        quality: name === 'quality' ? (checked ? 'high' : 'low') : prevClient.quality,
+        conversation_status: name === 'conversation_status' ? (checked ? 'ongoing' : 'Pending') : prevClient.conversation_status,
+      }));
+    } else if (name in paymentDetails) {
+      setPaymentDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: value
+      }));
+    }
 
     if (name === 'schedule' && scheduleInputRef.current) {
       scheduleInputRef.current.blur();
@@ -67,7 +82,11 @@ const ClientForm = ({ goToHome }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`${backendUrl}/clients`, client);
+      const clientData = {
+        ...client,
+        paymentDetails: paymentDetails,
+      };
+      const response = await axios.post(`${backendUrl}/clients`, clientData);
       addClient(response.data);
 
       if (documents.length > 0) {
@@ -100,7 +119,13 @@ const ClientForm = ({ goToHome }) => {
       fullname: '',
       phone: '',
       quality: 'low',
-      conversation_status: 'none',
+      conversation_status: 'Pending', // Reset to 'Pending'
+    });
+    setPaymentDetails({
+      amountPaid: '',
+      paymentDuration: '',
+      totalAmount: '',
+      balance: '',
     });
     setDocuments([]);
     setIsSubmitted(false);
@@ -153,7 +178,24 @@ const ClientForm = ({ goToHome }) => {
             </label>
           </div>
         ))}
-        
+
+        <div style={{ marginTop: '20px' }}>
+          <h3>Payment Details</h3>
+          {Object.entries(paymentDetails).map(([key, value]) => (
+            <div key={key} style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '10px', width: '150px' }}>{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+                <input
+                  type={key === 'paymentDuration' ? 'text' : 'number'}
+                  name={key}
+                  value={value}
+                  onChange={handleChange}
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
         <div style={{ marginTop: '20px' }}>
           <h3>Upload Documents</h3>
           <input type="file" multiple onChange={handleFileChange} />
@@ -166,9 +208,9 @@ const ClientForm = ({ goToHome }) => {
             ))}
           </ul>
         </div>
-        
+
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        
+
         <button type="submit" style={{ marginTop: '20px' }} disabled={isLoading}>
           {isLoading ? 'Adding Client...' : 'Add Client'}
         </button>

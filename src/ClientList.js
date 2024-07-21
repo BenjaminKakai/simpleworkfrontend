@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { ClientContext } from './ClientProvider';
-import axios from 'axios';  // Add this line
+import axios from 'axios';
 
 const ClientList = ({ onClientRemoved }) => {
   const { clients: contextClients, removeClient, updateClientStatus } = useContext(ClientContext);
@@ -13,7 +13,9 @@ const ClientList = ({ onClientRemoved }) => {
   const [newDocuments, setNewDocuments] = useState([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [error, setError] = useState(null);
-  const [expandedClient, setExpandedClient] = useState(null); // State for toggling buttons
+  const [expandedClient, setExpandedClient] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState(null);
+  const [statusUpdateSuccess, setStatusUpdateSuccess] = useState(null);
 
   useEffect(() => {
     if (contextClients) {
@@ -65,11 +67,19 @@ const ClientList = ({ onClientRemoved }) => {
   const handleExpoundClient = async (client) => {
     setSelectedClient(client);
     try {
-      const response = await axios.get(`http://localhost:3000/clients/${client.id}/documents`);
-      setDocuments(response.data);
+      const [documentsResponse, paymentDetailsResponse] = await Promise.all([
+        axios.get(`http://localhost:3000/clients/${client.id}/documents`),
+        axios.get(`http://localhost:3000/clients/${client.id}/payment-details`)
+      ]);
+      setDocuments(documentsResponse.data);
+      setPaymentDetails(paymentDetailsResponse.data);
     } catch (error) {
-      setError('Error fetching client documents. Please try again.');
-      console.error('Error fetching client documents:', error);
+      if (error.response && error.response.status === 404) {
+        setPaymentDetails(null);
+      } else {
+        setError('Error fetching client data. Please try again.');
+        console.error('Error fetching client data:', error);
+      }
     }
   };
 
@@ -148,11 +158,21 @@ const ClientList = ({ onClientRemoved }) => {
 
   const pasteClientName = async (client, status) => {
     try {
+      setLoading(true);
       const updatedStatus = status === 'Finalized Deal' ? 'Finalized Deal' : 'Pending';
       await updateClientStatus(client.id, updatedStatus);
+      setStatusUpdateSuccess(`Successfully updated ${client.fullname}'s status to ${updatedStatus}`);
+      // Update the client's status in the filteredClients array
+      setFilteredClients(prevClients =>
+        prevClients.map(c =>
+          c.id === client.id ? { ...c, conversation_status: updatedStatus } : c
+        )
+      );
     } catch (error) {
-      console.error('Error pasting client name:', error);
-      setError('Error updating client status. Please try again.');
+      console.error('Error updating client status:', error);
+      setError(`Error updating client status: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -205,6 +225,7 @@ const ClientList = ({ onClientRemoved }) => {
       </div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      {statusUpdateSuccess && <p style={{ color: 'green' }}>{statusUpdateSuccess}</p>}
 
       {isListVisible && !selectedClient && (
         <div>
@@ -239,22 +260,16 @@ const ClientList = ({ onClientRemoved }) => {
             ))}
           </div>
 
-          <h3>Add New Documents</h3>
-          <input type="file" multiple onChange={handleFileChange} />
-          <ul>
-            {newDocuments.map((file, index) => (
-              <li key={index}>
-                {file.name}
-                <button onClick={() => handleRemoveDocument(index)}>Remove</button>
-              </li>
-            ))}
-          </ul>
-          <button onClick={handleSaveDocuments} disabled={loading || newDocuments.length === 0}>
-            {loading ? 'Uploading...' : 'Save Documents'}
-          </button>
-          <button onClick={handleGoBack}>
-            Go Back
-          </button>
+          <h3>Upload New Documents</h3>
+          <input 
+            type="file" 
+            multiple 
+            onChange={handleFileChange} 
+          />
+          <button onClick={handleSaveDocuments}>Save Documents</button>
+          {hasUnsavedChanges && <p>You have unsaved changes.</p>}
+
+          <button onClick={handleGoBack}>Back to List</button>
         </div>
       )}
     </div>
