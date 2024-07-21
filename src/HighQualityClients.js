@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './HighQualityClients.css';
 
 const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 
@@ -21,21 +22,21 @@ const HighQualityClients = ({ onClientQualityChange }) => {
   }, [onClientQualityChange]); // Update high-quality clients when quality changes
 
   return (
-    <div>
-      <button onClick={() => setIsListVisible(!isListVisible)}>
-        {isListVisible ? 'Hide High Quality Clients' : 'Open High Quality Clients'}
+    <div className="high-quality-clients-container">
+      <button 
+        className="toggle-button" 
+        onClick={() => setIsListVisible(!isListVisible)}
+      >
+        {isListVisible ? 'Hide the List' : 'Open the List'}
       </button>
       {isListVisible && (
-        <>
-        
-          <ul style={{ listStyleType: 'none', marginLeft: '10px', padding: '0' }}>
-            {highQualityClients.map((client) => (
-              <li key={client.id}>
-                {client.fullname} - {client.project}
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul className="high-quality-clients-list">
+          {highQualityClients.map((client) => (
+            <li key={client.id}>
+              {client.fullname} - {client.project}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
