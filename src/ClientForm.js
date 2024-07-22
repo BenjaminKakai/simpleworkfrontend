@@ -15,7 +15,7 @@ const ClientForm = ({ goToHome }) => {
     fullname: '',
     phone: '',
     quality: 'low',
-    conversation_status: 'Pending', // Changed to 'Pending'
+    conversation_status: 'Pending',
   });
 
   const [paymentDetails, setPaymentDetails] = useState({
@@ -119,7 +119,7 @@ const ClientForm = ({ goToHome }) => {
       fullname: '',
       phone: '',
       quality: 'low',
-      conversation_status: 'Pending', // Reset to 'Pending'
+      conversation_status: 'Pending',
     });
     setPaymentDetails({
       amountPaid: '',
@@ -134,10 +134,12 @@ const ClientForm = ({ goToHome }) => {
 
   if (isSubmitted) {
     return (
-      <div>
+      <div style={{ textAlign: 'center' }}>
         <p>Client successfully added!</p>
-        <button onClick={handleAddAnotherClient}>Add Another Client</button>
-        <button onClick={goToHome}>Go Back Home</button>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <button onClick={handleAddAnotherClient}>Add Another Client</button>
+          <button onClick={goToHome}>Go Back Home</button>
+        </div>
       </div>
     );
   }
