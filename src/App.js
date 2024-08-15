@@ -12,7 +12,9 @@ import Footer from './Footer';
 import axios from 'axios';
 import './App.css';
 
-const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
+// Update the backend URL to the new deployed backend
+// Update the backend URL to the new deployed backend
+const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
 
 const App = () => {
   const [activeView, setActiveView] = useState('home');
@@ -61,7 +63,6 @@ const App = () => {
   return (
     <ClientProvider>
       <div className="app">
-        
         <ErrorBoundary>
           <NavBar
             onShowForm={() => handleShowView('form')}

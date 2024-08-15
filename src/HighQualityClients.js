@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './HighQualityClients.css';
 
-const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
+// Update the backend URL to the new deployed backend
+const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
 
 const HighQualityClients = ({ onClientQualityChange }) => {
   const [highQualityClients, setHighQualityClients] = useState([]);
