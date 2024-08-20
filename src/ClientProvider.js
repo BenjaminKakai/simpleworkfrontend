@@ -10,10 +10,18 @@ export const ClientProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [clientStatusUpdated, setClientStatusUpdated] = useState(false);
 
+  // Function to get the JWT token from localStorage
+  const getToken = () => localStorage.getItem('token');
+
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/clients`);
+        const token = getToken();
+        const response = await axios.get(`${backendUrl}/clients`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setClients(response.data);
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -33,7 +41,12 @@ export const ClientProvider = ({ children }) => {
 
   const updateClientStatus = async (clientId, status) => {
     try {
-      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { status });
+      const token = getToken();
+      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { status }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       setClients(prevClients => 
         prevClients.map(client => 
           client.id === clientId ? { ...client, conversation_status: status } : client
