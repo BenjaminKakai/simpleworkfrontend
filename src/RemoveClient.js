@@ -4,8 +4,7 @@ import { ClientContext } from './ClientProvider';
 import './RemoveClient.css'; // Ensure you have a CSS file for styling
 
 // Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
-
+const backendUrl = 'https://simple-work-database.vercel.app'; // Or another appropriate URL
 
 const RemoveClient = () => {
   const { clients, removeClient } = useContext(ClientContext);

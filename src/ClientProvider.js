@@ -2,8 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 // Update the backend URL to the new deployed backend
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
+const backendUrl = 'https://simple-work-database.vercel.app'; // Or another appropriate URL
 
 export const ClientContext = createContext();
 

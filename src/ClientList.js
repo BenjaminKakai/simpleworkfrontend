@@ -40,7 +40,7 @@ const ClientList = ({ onClientRemoved }) => {
   const handleRemoveClient = async (clientId) => {
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:3000/clients/${clientId}`);
+      await axios.delete(`https://simple-work-database.vercel.app/clients/${clientId}`);
       removeClient(clientId);
       onClientRemoved(clientId);
     } catch (error) {
@@ -68,8 +68,8 @@ const ClientList = ({ onClientRemoved }) => {
     setSelectedClient(client);
     try {
       const [documentsResponse, paymentDetailsResponse] = await Promise.all([
-        axios.get(`http://localhost:3000/clients/${client.id}/documents`),
-        axios.get(`http://localhost:3000/clients/${client.id}/payment-details`)
+        axios.get(`https://simple-work-database.vercel.app/clients/${client.id}/documents`),
+        axios.get(`https://simple-work-database.vercel.app/clients/${client.id}/payment-details`)
       ]);
       setDocuments(documentsResponse.data);
       setPaymentDetails(paymentDetailsResponse.data);
@@ -102,11 +102,11 @@ const ClientList = ({ onClientRemoved }) => {
     });
 
     try {
-      await axios.post(`http://localhost:3000/clients/${selectedClient.id}/documents`, formData, {
+      await axios.post(`https://simple-work-database.vercel.app/clients/${selectedClient.id}/documents`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setNewDocuments([]);
-      const response = await axios.get(`http://localhost:3000/clients/${selectedClient.id}/documents`);
+      const response = await axios.get(`https://simple-work-database.vercel.app/clients/${selectedClient.id}/documents`);
       setDocuments(response.data);
       setHasUnsavedChanges(false);
     } catch (error) {
@@ -127,7 +127,7 @@ const ClientList = ({ onClientRemoved }) => {
 
   const handleDocumentClick = async (documentId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/documents/${documentId}`, { responseType: 'blob' });
+      const response = await axios.get(`https://simple-work-database.vercel.app/documents/${documentId}`, { responseType: 'blob' });
       const contentType = response.headers['content-type'];
 
       let filename = 'download';
@@ -223,6 +223,8 @@ const ClientList = ({ onClientRemoved }) => {
           disabled={loading}
         />
       </div>
+
+
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {statusUpdateSuccess && <p style={{ color: 'green' }}>{statusUpdateSuccess}</p>}

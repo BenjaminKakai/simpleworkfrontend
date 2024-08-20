@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ClientContext } from './ClientProvider';
 
 // Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
+const backendUrl = 'https://simple-work-database.vercel.app';
 
 const ClientForm = ({ goToHome }) => {
   const { addClient } = useContext(ClientContext);
