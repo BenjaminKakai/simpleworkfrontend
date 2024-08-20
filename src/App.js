@@ -9,38 +9,48 @@ import FinalizedDeals from './FinalizedDeals';
 import PendingClients from './PendingClients';
 import NavBar from './NavBar';
 import Footer from './Footer';
+import Login from './Login';  // Import Login component
 import axios from 'axios';
+import AuthService from './AuthService'; // Import AuthService
 import './App.css';
 
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database.vercel.app';
+// Initialize Axios instance and setup interceptors
+const axiosInstance = axios.create();
+AuthService.setupInterceptors(axiosInstance);
+
+const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
 
 const App = () => {
   const [activeView, setActiveView] = useState('home');
   const [clients, setClients] = useState([]);
-  const [showOverlay, setShowOverlay] = useState(true); // Show overlay by default on launch
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const [showOverlay, setShowOverlay] = useState(true);
 
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/clients`);
-        setClients(response.data);
-      } catch (error) {
-        console.error('Error fetching clients:', error);
-      }
-    };
-
-    fetchClients();
-  }, []); // No dependencies needed for initial fetch
-
-  useEffect(() => {
-    // Show overlay when in home view
-    if (activeView === 'home') {
-      setShowOverlay(true);
-    } else {
-      setShowOverlay(false);
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+      fetchClients(token);
     }
-  }, [activeView]); // Update overlay based on active view
+  }, []);
+
+  const fetchClients = async (token) => {
+    try {
+      const response = await axiosInstance.get(`${backendUrl}/clients`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      setClients(response.data);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    fetchClients(localStorage.getItem('token'));
+  };
 
   const handleShowView = (view) => {
     setActiveView(view);
@@ -48,7 +58,7 @@ const App = () => {
 
   const handleHomeClick = () => {
     setActiveView('home');
-    setShowOverlay(true); // Show the overlay when 'home' is clicked
+    setShowOverlay(true);
   };
 
   const handleClientAdded = (newClient) => {
@@ -63,27 +73,33 @@ const App = () => {
     <ClientProvider>
       <div className="app">
         <ErrorBoundary>
-          <NavBar
-            onShowForm={() => handleShowView('form')}
-            onShowRemoveClient={() => handleShowView('removeClient')}
-            onShowClientList={() => handleShowView('clientList')}
-            onShowHighQualityClients={() => handleShowView('highQualityClients')}
-            onShowFinalizedDeals={() => handleShowView('finalizedDeals')}
-            onShowPendingClients={() => handleShowView('pendingClients')}
-            onHomeClick={handleHomeClick}
-          />
-          <div className="main-content">
-            <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
-              <h1 className="rotate-text">Sales Department</h1>
-            </div>
-            {activeView === 'form' && <ClientForm onClientAdded={handleClientAdded} goToHome={handleHomeClick} />}
-            {activeView === 'removeClient' && <RemoveClient onClientRemoved={handleClientRemoved} />}
-            {activeView === 'clientList' && <ClientList onClientRemoved={handleClientRemoved} />}
-            {activeView === 'highQualityClients' && <HighQualityClients />}
-            {activeView === 'finalizedDeals' && <FinalizedDeals />}
-            {activeView === 'pendingClients' && <PendingClients />}
-          </div>
-          <Footer />
+          {isLoggedIn ? (
+            <>
+              <NavBar
+                onShowForm={() => handleShowView('form')}
+                onShowRemoveClient={() => handleShowView('removeClient')}
+                onShowClientList={() => handleShowView('clientList')}
+                onShowHighQualityClients={() => handleShowView('highQualityClients')}
+                onShowFinalizedDeals={() => handleShowView('finalizedDeals')}
+                onShowPendingClients={() => handleShowView('pendingClients')}
+                onHomeClick={handleHomeClick}
+              />
+              <div className="main-content">
+                <div className="centered-text" style={{ marginTop: '100px', color: 'orange' }}>
+                  <h1 className="rotate-text">Sales Department</h1>
+                </div>
+                {activeView === 'form' && <ClientForm onClientAdded={handleClientAdded} goToHome={handleHomeClick} />}
+                {activeView === 'removeClient' && <RemoveClient onClientRemoved={handleClientRemoved} />}
+                {activeView === 'clientList' && <ClientList onClientRemoved={handleClientRemoved} />}
+                {activeView === 'highQualityClients' && <HighQualityClients />}
+                {activeView === 'finalizedDeals' && <FinalizedDeals />}
+                {activeView === 'pendingClients' && <PendingClients />}
+              </div>
+              <Footer />
+            </>
+          ) : (
+            <Login onLoginSuccess={handleLoginSuccess} />
+          )}
         </ErrorBoundary>
       </div>
     </ClientProvider>
