@@ -1,43 +1,43 @@
-import React, { useContext, useEffect, useState } from 'react';
+// src/RemoveClient.js
+import React, { useContext, useState } from 'react';
+import axiosInstance from './api'; // Updated import
 import { ClientContext } from './ClientProvider';
 import './PendingClients.css'; // Import the CSS file
 
-const PendingClients = ({ refreshTrigger }) => {
-  const { clients, clientStatusUpdated } = useContext(ClientContext);
-  const [pendingClients, setPendingClients] = useState([]);
+const RemoveClient = ({ refreshTrigger }) => {
+  const { clients, removeClient } = useContext(ClientContext);
+  const [selectedClient, setSelectedClient] = useState('');
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (clients) {
-      const pending = clients.filter(client => client.conversation_status === 'Pending');
-      setPendingClients(pending);
+  const handleRemoveClient = async () => {
+    try {
+      await axiosInstance.delete(`/clients/${selectedClient}`); // Updated axios usage
+      removeClient(selectedClient); // Remove client from context
+      setSelectedClient('');
+    } catch (error) {
+      console.error('Error removing client:', error);
+      setError('Failed to remove client. Please try again.');
     }
-  }, [clients, clientStatusUpdated, refreshTrigger]);
-
-  if (error) {
-    return (
-      <div className="pending-clients-container">
-        <h2>Error Fetching Pending Clients</h2>
-        <p>{error.message}</p>
-      </div>
-    );
-  }
+  };
 
   return (
-    <div className="pending-clients-container">
-      {pendingClients.length > 0 ? (
-        <ul className="pending-clients-list">
-          {pendingClients.map((client) => (
-            <li key={client.id}>
-              {client.fullname} - {client.project}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No pending clients available.</p>
-      )}
+    <div className="remove-client-container">
+      <h2>Remove Client</h2>
+      <select
+        value={selectedClient}
+        onChange={(e) => setSelectedClient(e.target.value)}
+      >
+        <option value="">Select a client to remove</option>
+        {clients.map((client) => (
+          <option key={client.id} value={client.id}>
+            {client.fullname} - {client.project}
+          </option>
+        ))}
+      </select>
+      <button onClick={handleRemoveClient}>Remove Client</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
 
-export default PendingClients;
+export default RemoveClient;

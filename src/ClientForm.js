@@ -1,9 +1,7 @@
+// src/ClientForm.js
 import React, { useState, useContext, useRef } from 'react';
-import axios from 'axios';
+import axiosInstance from './api'; // Updated import
 import { ClientContext } from './ClientProvider';
-
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database.vercel.app';
 
 const ClientForm = ({ goToHome }) => {
   const { addClient } = useContext(ClientContext);
@@ -87,7 +85,7 @@ const ClientForm = ({ goToHome }) => {
         ...client,
         paymentDetails: paymentDetails,
       };
-      const response = await axios.post(`${backendUrl}/clients`, clientData);
+      const response = await axiosInstance.post('/clients', clientData); // Updated axios usage
       addClient(response.data);
 
       if (documents.length > 0) {
@@ -96,7 +94,7 @@ const ClientForm = ({ goToHome }) => {
           formData.append('documents', doc.file);
         });
 
-        await axios.post(`${backendUrl}/clients/${response.data.id}/documents`, formData, {
+        await axiosInstance.post(`/clients/${response.data.id}/documents`, formData, { // Updated axios usage
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }

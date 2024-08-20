@@ -1,8 +1,6 @@
+// src/ClientContext.js
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
-
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database.vercel.app';
+import axiosInstance from './api'; // Updated import
 
 const defaultContextValue = {
   clients: [],
@@ -19,7 +17,7 @@ export const ClientProvider = ({ children }) => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/clients`);
+        const response = await axiosInstance.get('/clients'); // Updated axios usage
         setClients(response.data);
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -31,7 +29,7 @@ export const ClientProvider = ({ children }) => {
 
   const updateClientStatus = async (clientId, updatedStatus) => {
     try {
-      const response = await axios.put(`${backendUrl}/clients/${clientId}`, { conversation_status: updatedStatus });
+      const response = await axiosInstance.put(`/clients/${clientId}`, { conversation_status: updatedStatus }); // Updated axios usage
       console.log('Client status updated:', response.data);
       setClientStatusUpdated(prev => !prev); // Toggle this value to trigger re-renders
     } catch (error) {

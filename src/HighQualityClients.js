@@ -1,9 +1,7 @@
+// src/HighQualityClients.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from './api'; // Updated import
 import './HighQualityClients.css';
-
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database.vercel.app'; // Or another appropriate URL
 
 const HighQualityClients = ({ onClientQualityChange }) => {
   const [highQualityClients, setHighQualityClients] = useState([]);
@@ -12,7 +10,7 @@ const HighQualityClients = ({ onClientQualityChange }) => {
   useEffect(() => {
     const fetchHighQualityClients = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/clients/high-quality`);
+        const response = await axiosInstance.get('/clients/high-quality'); // Updated axios usage
         setHighQualityClients(response.data);
       } catch (error) {
         console.error('Error fetching high-quality clients:', error);

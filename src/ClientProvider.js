@@ -1,8 +1,6 @@
+// src/ClientProvider.js
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
-
-// Update the backend URL to the new deployed backend
-const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
+import axiosInstance from './api'; // Updated import
 
 export const ClientContext = createContext();
 
@@ -16,12 +14,7 @@ export const ClientProvider = ({ children }) => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const token = getToken();
-        const response = await axios.get(`${backendUrl}/clients`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await axiosInstance.get('/clients'); // Updated axios usage
         setClients(response.data);
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -41,12 +34,7 @@ export const ClientProvider = ({ children }) => {
 
   const updateClientStatus = async (clientId, status) => {
     try {
-      const token = getToken();
-      const response = await axios.post(`${backendUrl}/clients/${clientId}/status`, { status }, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await axiosInstance.post(`/clients/${clientId}/status`, { status }); // Updated axios usage
       setClients(prevClients => 
         prevClients.map(client => 
           client.id === clientId ? { ...client, conversation_status: status } : client

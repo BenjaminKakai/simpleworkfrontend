@@ -1,10 +1,11 @@
-import axios from 'axios';
+// src/AuthService.js
+import axiosInstance from './api'; // Updated import
 
 const AuthService = {
   refreshToken: async () => {
     const currentToken = localStorage.getItem('token');
     try {
-      const response = await axios.post('https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app/refresh-token', {}, {
+      const response = await axiosInstance.post('/refresh-token', {}, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       });
       const newToken = response.data.token;
@@ -23,9 +24,14 @@ const AuthService = {
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          const newToken = await AuthService.refreshToken();
-          axios.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
-          return axiosInstance(originalRequest);
+          try {
+            const newToken = await AuthService.refreshToken();
+            axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
+            return axiosInstance(originalRequest);
+          } catch (refreshError) {
+            console.error('Error refreshing token:', refreshError);
+            // Handle refresh error (e.g., logout user)
+          }
         }
         return Promise.reject(error);
       }

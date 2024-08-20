@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import { ClientProvider } from './ClientProvider';
@@ -9,47 +10,37 @@ import FinalizedDeals from './FinalizedDeals';
 import PendingClients from './PendingClients';
 import NavBar from './NavBar';
 import Footer from './Footer';
-import Login from './Login';  // Import Login component
-import axios from 'axios';
-import AuthService from './AuthService'; // Import AuthService
+import Login from './Login';
+import axiosInstance from './api';  // Import axiosInstance from api.js
 import './App.css';
-
-// Initialize Axios instance and setup interceptors
-const axiosInstance = axios.create();
-AuthService.setupInterceptors(axiosInstance);
-
-const backendUrl = 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app';
 
 const App = () => {
   const [activeView, setActiveView] = useState('home');
   const [clients, setClients] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
-      fetchClients(token);
+      fetchClients();  // No need to pass token here
     }
   }, []);
 
-  const fetchClients = async (token) => {
+  const fetchClients = async () => {
     try {
-      const response = await axiosInstance.get(`${backendUrl}/clients`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/clients');
       setClients(response.data);
     } catch (error) {
       console.error('Error fetching clients:', error);
     }
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (token) => {
+    localStorage.setItem('token', token);
     setIsLoggedIn(true);
-    fetchClients(localStorage.getItem('token'));
+    fetchClients();  // No need to pass token here
   };
 
   const handleShowView = (view) => {
