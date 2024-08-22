@@ -24,7 +24,7 @@ const App = () => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
-      fetchClients();  // No need to pass token here
+      fetchClients();
     }
   }, []);
 
@@ -33,14 +33,18 @@ const App = () => {
       const response = await axiosInstance.get('/clients');
       setClients(response.data);
     } catch (error) {
-      console.error('Error fetching clients:', error);
+      console.error('Error fetching clients:', error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        // Handle unauthorized error, maybe redirect to login or refresh token
+        setIsLoggedIn(false);
+      }
     }
   };
 
   const handleLoginSuccess = (token) => {
     localStorage.setItem('token', token);
     setIsLoggedIn(true);
-    fetchClients();  // No need to pass token here
+    fetchClients();
   };
 
   const handleShowView = (view) => {

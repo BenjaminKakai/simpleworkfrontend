@@ -2,18 +2,24 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app',
-  headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  }
+  baseURL: 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app'
 });
+
+// Interceptor to attach token to every request
+axiosInstance.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+}, error => Promise.reject(error));
 
 // Add response interceptor to handle token refresh
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  response => response,
+  async error => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const { data } = await axios.post(`${axiosInstance.defaults.baseURL}/refresh-token`, { 
@@ -23,9 +29,9 @@ axiosInstance.interceptors.response.use(
         axiosInstance.defaults.headers['Authorization'] = `Bearer ${data.token}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // Handle refresh error (e.g., logout user, redirect to login)
         console.error('Error refreshing token:', refreshError);
-        // You might want to call a logout function or redirect to the login page here
+        // Handle token refresh error (e.g., logout user, redirect to login)
+        // e.g., window.location.href = '/login'; or a logout function call
       }
     }
     return Promise.reject(error);

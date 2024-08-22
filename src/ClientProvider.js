@@ -1,6 +1,6 @@
 // src/ClientProvider.js
 import React, { createContext, useState, useEffect } from 'react';
-import axiosInstance from './api'; // Updated import
+import axios from 'axios';
 
 export const ClientContext = createContext();
 
@@ -8,13 +8,36 @@ export const ClientProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [clientStatusUpdated, setClientStatusUpdated] = useState(false);
 
-  // Function to get the JWT token from localStorage
-  const getToken = () => localStorage.getItem('token');
+  // Create Axios instance with interceptors
+  const axiosInstance = axios.create({
+    baseURL: 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app'
+  });
+
+  axiosInstance.interceptors.request.use(
+    config => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
+
+  axiosInstance.interceptors.response.use(
+    response => response,
+    error => {
+      console.error('API request failed:', error);
+      return Promise.reject(error);
+    }
+  );
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axiosInstance.get('/clients'); // Updated axios usage
+        const response = await axiosInstance.get('/clients');
         setClients(response.data);
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -22,7 +45,7 @@ export const ClientProvider = ({ children }) => {
     };
 
     fetchClients();
-  }, [clientStatusUpdated]); // Dependency array now includes clientStatusUpdated
+  }, [clientStatusUpdated]);
 
   const addClient = (newClient) => {
     setClients(prevClients => [...prevClients, newClient]);
@@ -34,13 +57,13 @@ export const ClientProvider = ({ children }) => {
 
   const updateClientStatus = async (clientId, status) => {
     try {
-      const response = await axiosInstance.post(`/clients/${clientId}/status`, { status }); // Updated axios usage
+      const response = await axiosInstance.post(`/clients/${clientId}/status`, { status });
       setClients(prevClients => 
         prevClients.map(client => 
           client.id === clientId ? { ...client, conversation_status: status } : client
         )
       );
-      setClientStatusUpdated(prev => !prev); // Toggle this value to trigger re-renders
+      setClientStatusUpdated(prev => !prev);
       return response.data;
     } catch (error) {
       console.error('Error updating client status:', error);
