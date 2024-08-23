@@ -1,8 +1,11 @@
-// src/api.js
 import axios from 'axios';
 
+// Create Axios instance with base URL
 const axiosInstance = axios.create({
-  baseURL: 'https://simple-work-database.vercel.app'
+  baseURL: 'https://simple-work-database.vercel.app',
+  headers: {
+    'Origin': window.location.origin, // Set the Origin header
+  }
 });
 
 // Interceptor to attach token to every request
@@ -14,7 +17,7 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 }, error => Promise.reject(error));
 
-// Add response interceptor to handle token refresh
+// Response interceptor to handle token refresh
 axiosInstance.interceptors.response.use(
   response => response,
   async error => {

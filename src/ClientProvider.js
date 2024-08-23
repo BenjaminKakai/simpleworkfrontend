@@ -1,6 +1,7 @@
 // src/ClientProvider.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import axiosInstance from './api';
 
 export const ClientContext = createContext();
 
@@ -10,7 +11,7 @@ export const ClientProvider = ({ children }) => {
 
   // Create Axios instance with interceptors
   const axiosInstance = axios.create({
-    baseURL: 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app'
+    baseURL: 'https://simple-work-database.vercel.app',
   });
 
   axiosInstance.interceptors.request.use(
