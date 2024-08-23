@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://simple-work-database-24wn6b3nw-benjaminkakais-projects.vercel.app'
+  baseURL: 'https://simple-work-database.vercel.app'
 });
 
 // Interceptor to attach token to every request
