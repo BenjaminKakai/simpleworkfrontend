@@ -2,10 +2,7 @@ import axios from 'axios';
 
 // Create Axios instance with base URL
 const axiosInstance = axios.create({
-  baseURL: 'https://simple-work-database.vercel.app',
-  headers: {
-    'Origin': window.location.origin, // Set the Origin header
-  }
+  baseURL: 'https://simple-work-database.vercel.app'
 });
 
 // Interceptor to attach token to every request
