@@ -11,7 +11,7 @@ import PendingClients from './PendingClients';
 import NavBar from './NavBar';
 import Footer from './Footer';
 import Login from './Login';
-import axiosInstance from './api';  // Import axiosInstance from api.js
+import axiosInstance from './api';
 import './App.css';
 
 const App = () => {
@@ -21,11 +21,23 @@ const App = () => {
   const [showOverlay, setShowOverlay] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-      fetchClients();
-    }
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          // Make a request to a protected route to check if the token is still valid
+          await axiosInstance.get('/check-auth');
+          setIsLoggedIn(true);
+          fetchClients();
+        } catch (error) {
+          console.error('Authentication check failed:', error);
+          setIsLoggedIn(false);
+          localStorage.removeItem('token');
+        }
+      }
+    };
+
+    checkAuth();
   }, []);
 
   const fetchClients = async () => {
@@ -34,9 +46,9 @@ const App = () => {
       setClients(response.data);
     } catch (error) {
       console.error('Error fetching clients:', error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        // Handle unauthorized error, maybe redirect to login or refresh token
+      if (error.response?.status === 401 || error.response?.status === 403) {
         setIsLoggedIn(false);
+        localStorage.removeItem('token');
       }
     }
   };
