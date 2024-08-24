@@ -2,6 +2,7 @@
 import React, { useState, useContext, useRef } from 'react';
 import axiosInstance from './api'; // Updated import
 import { ClientContext } from './ClientProvider';
+import uploadFileToS3 from './aws-utils'; // Import the function
 
 const ClientForm = ({ goToHome }) => {
   const { addClient } = useContext(ClientContext);
@@ -89,6 +90,9 @@ const ClientForm = ({ goToHome }) => {
       addClient(response.data);
 
       if (documents.length > 0) {
+        const uploadPromises = documents.map(doc => uploadFileToS3(doc.file)); // Upload files to S3
+        await Promise.all(uploadPromises);
+
         const formData = new FormData();
         documents.forEach((doc) => {
           formData.append('documents', doc.file);
