@@ -46,6 +46,7 @@ You can change these credentials as they are hard-coded in the backend.
 ![image](https://github.com/user-attachments/assets/108c9103-fce9-44c7-9d3d-a4824efabc9a)
 
 ## Demo Video
+Click on this image to watch the demo
 [![Watch the video](https://img.youtube.com/vi/aM3lSyn37Pw/0.jpg)](https://youtu.be/aM3lSyn37Pw)
 
 
